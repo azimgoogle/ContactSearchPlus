@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">contact</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Preference Settings -->
+    <string name="phone_number">Phone Number</string>
+    <string name="phone_number_summary">Search in phone numbers</string>
+
+    <string name="email">EMail</string>
+    <string name="email_summary">Search in e-mail addresses</string>
+
+    <string name="address">Address</string>
+    <string name="address_summary">Search in contact postal addresses</string>
+
+    <string name="notes">Notes</string>
+    <string name="notes_summary">Search in contact notes</string>
+
+    <string name="search_in_phone_numbers">Search in phone number contacts</string>
+    <string name="search_in_phone_numbers_summary">Search restricts only which contacts has phone number. Improves performance.</string>
+
+    <string name="organization">Organizations</string>
+    <string name="organization_summary">Search in contact organizations</string>
+
+    <string name="relation">Relations</string>
+    <string name="relation_summary">Search for contact relations</string>
+
+    <string name="sort_order">Contact Sorting Order</string>
+    <string name="sort_order_summary">Select freuently contacted contacts should get priority or not</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+</resources>

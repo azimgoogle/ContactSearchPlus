@@ -85,12 +85,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         syncAdapter();
 
-        boolean bootSynced = PrefManager.on(this).isBootSynced();
-        boolean synced = PrefManager.on(this).isSynced();
+        boolean bootSynced = PrefManager.on(this.getBaseContext()).isBootSynced();
+        boolean synced = PrefManager.on(this.getBaseContext()).isSynced();
         if (!bootSynced) {
-            new SyncTask(this).execute(new HashMap<String, Boolean>());
+            new SyncTask(this.getBaseContext()).execute(new HashMap<String, Boolean>());
         } else if (!synced) {
-            new SyncTask(this).execute(PrefManager.on(this).getConfig());
+            new SyncTask(this.getBaseContext()).execute(PrefManager.on(this.getBaseContext()).getConfig());
         }
     }
 

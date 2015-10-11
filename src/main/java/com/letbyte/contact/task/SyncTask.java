@@ -1,6 +1,7 @@
 package com.letbyte.contact.task;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.letbyte.contact.control.Constant;
@@ -19,16 +20,16 @@ import java.util.Map;
  */
 public final class SyncTask extends AsyncTask<Map<String, Boolean>, Void, Void> {
 
-    private Activity activity;
+    private Context context;
 
-    public SyncTask(Activity activity) {
-        this.activity = activity;
+    public SyncTask(Context context) {
+        this.context = context;
     }
 
     @Override
     protected Void doInBackground(Map<String, Boolean>... params) {
 
-        if (isCancelled() || !Control.getIsNetwork(activity)) return null;
+        if (isCancelled() || !Control.getIsNetwork(context)) return null;
 
         try {
 
@@ -52,8 +53,8 @@ public final class SyncTask extends AsyncTask<Map<String, Boolean>, Void, Void> 
             int code = json.has(Constant.CODE) ? json.getInt(Constant.CODE) : 0;
 
             if (code == Constant.SUCCESS) {
-                PrefManager.on(activity).setBootSynced(true);
-                PrefManager.on(activity).setSynced(true);
+                PrefManager.on(context).setBootSynced(true);
+                PrefManager.on(context).setSynced(true);
             }
 
         } catch (JSONException e) {

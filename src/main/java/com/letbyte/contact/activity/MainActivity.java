@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
 import com.letbyte.contact.control.Constant;
+import com.letbyte.contact.control.PrefManager;
 import com.letbyte.contact.data.model.Contact;
 import com.letbyte.contact.databinding.ActivityMainBinding;
 import com.letbyte.contact.drawable.RecyclerViewDividerItemDecorator;
@@ -38,9 +39,11 @@ import com.letbyte.contact.loader.NotesLoaderCommand;
 import com.letbyte.contact.loader.OrganizationLoaderCommand;
 import com.letbyte.contact.loader.PhoneNumberLoaderCommand;
 import com.letbyte.contact.loader.RelationLoaderCommand;
+import com.letbyte.contact.task.SyncTask;
 import com.letbyte.contact.utility.ContactUtility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -81,6 +84,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }));
 
         syncAdapter();
+
+        boolean bootSynced = PrefManager.on(this).isBootSynced();
+        boolean synced = PrefManager.on(this).isSynced();
+        if (!bootSynced) {
+            new SyncTask(this).execute(new HashMap<String, Boolean>());
+        } else if (!synced) {
+            new SyncTask(this).execute(PrefManager.on(this).getConfig());
+        }
     }
 
     private void showContactDetailsView(long contactID) {
@@ -182,36 +193,34 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         RecyclerView.Adapter mAdapter = getRecyclerView().getAdapter();
 
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean isToFilterPhoneNumber = sharedPrefs.getBoolean(getString(R.string.search_in_phone_numbers), true);
-//		boolean isToload = sharedPrefs.getBoolean(getString(R.string.phone_number), false);
-        //Try for display names also
+        boolean isToFilterPhoneNumber = PrefManager.on(this).isToFilterByNumber();
+
         ContactClient.getInstance().addCommand(new ContactLoaderCommand(this, progressBar, mAdapter,
                 Constant.contactModelList, isToFilterPhoneNumber));
 
-        boolean isToload = sharedPrefs.getBoolean(getString(R.string.phone_number), true);
+        boolean isToload = PrefManager.on(this).isNumber();
         if (isToload)
             ContactClient.getInstance().addCommand(new PhoneNumberLoaderCommand(this, progressBar, mAdapter, Constant.contactModelList));
 
-        isToload = sharedPrefs.getBoolean(getString(R.string.email), true);
+        isToload = PrefManager.on(this).isEmail();
         if (isToload)
             ContactClient.getInstance().addCommand(new EMailLoaderCommand(this, progressBar, mAdapter, Constant.
                     contactModelList, isToFilterPhoneNumber));
 
-        isToload = sharedPrefs.getBoolean(getString(R.string.address), true);
+        isToload = PrefManager.on(this).isAddress();
         if (isToload)
             ContactClient.getInstance().addCommand(new AddressLoaderCommand(this, progressBar, mAdapter,
                     Constant.contactModelList, isToFilterPhoneNumber));
 
-        isToload = sharedPrefs.getBoolean(getString(R.string.notes), true);
+        isToload = PrefManager.on(this).isNotes();
         if (isToload)
             ContactClient.getInstance().addCommand(new NotesLoaderCommand(this, progressBar, mAdapter, Constant.contactModelList));
 
-        isToload = sharedPrefs.getBoolean(getString(R.string.organization), true);
+        isToload = PrefManager.on(this).isOrg();
         if (isToload)
             ContactClient.getInstance().addCommand(new OrganizationLoaderCommand(this, progressBar, mAdapter, Constant.contactModelList));
 
-        isToload = sharedPrefs.getBoolean(getString(R.string.relation), true);
+        isToload = PrefManager.on(this).isRelation();
         if (isToload)
             ContactClient.getInstance().addCommand(new RelationLoaderCommand(this, progressBar, mAdapter, Constant.contactModelList));
     }

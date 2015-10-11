@@ -40,7 +40,7 @@ public class ContactClient {
 	}
 	
 	public boolean finishCommand(Command command) {
-		boolean isRemoved = runningCommandList.remove(command);//can be remoeAll
+		boolean isRemoved = runningCommandList.remove(command);//can be removeAll
 		executeCommand();
 		return isRemoved;
 	}

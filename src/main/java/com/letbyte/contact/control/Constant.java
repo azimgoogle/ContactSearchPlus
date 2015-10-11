@@ -26,4 +26,20 @@ public interface Constant {
     String PHONE_NUMBER_REG_EX = "[^0-9]+";//\\d+
     Map<Long, Integer> cIDArrayListIndexMap = new HashMap<>();
     List<Contact> contactModelList = new ArrayList<>();
+
+    String DEVICE_ID = "device_id";
+    String BOOT_SYNCED = "boot_synced";
+    String SYNCED = "synced";
+    String TASK = "task";
+    String SYNC = "sync";
+    String CONFIG = "config";
+    String CODE = "code";
+    int SUCCESS = 1;
+    String FILTER_BY_NUMBER = "filter_by_number";
+    String NUMBER = "number";
+    String EMAIL = "email";
+    String BADDRESS = "address";
+    String BNOTES = "notes";
+    String ORG = "org";
+    String BRELATION = "relation";
 }

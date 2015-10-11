@@ -13,6 +13,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.letbyte.contact.R;
+import com.letbyte.contact.control.PrefManager;
+import com.letbyte.contact.task.SyncTask;
+
+import java.util.Map;
 
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -21,13 +25,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_settings);
-/*        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
-
-
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         sp.registerOnSharedPreferenceChangeListener(this);
         addPreferencesFromResource(R.xml.settings);
@@ -35,6 +32,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     @Override
     public void onBackPressed() {
+
+        if (isChanged) {
+            PrefManager.on(this).setSynced(false);
+            new SyncTask(this).execute(PrefManager.on(this).getConfig());
+        }
+
         Intent resultIntent = new Intent();
         resultIntent.putExtra("isChanged", isChanged);
         setResult(Activity.RESULT_OK, resultIntent);

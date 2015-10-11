@@ -45,7 +45,7 @@ public class ContactLoaderCommand implements Command {
     private class ContactLoaderTask extends AsyncTask<Void, Void, ArrayList<Contact>> {
 
         @Override
-        protected ArrayList<Contact> doInBackground(Void... params) {
+          protected ArrayList<Contact> doInBackground(Void... params) {
             if (contactClient != null) {
                 Cursor contactCursor = null;
                 try {

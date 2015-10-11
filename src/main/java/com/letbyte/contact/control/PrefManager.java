@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.letbyte.contact.R;
-import com.letbyte.contact.task.SyncTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,7 +76,7 @@ public class PrefManager {
     }
 
 
-    public boolean isToFilterByNumber() {
+    public boolean isFilteredByNumber() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         if (pref == null) return true;
         return pref.getBoolean(context.getString(R.string.search_in_phone_numbers), true);
@@ -101,13 +100,13 @@ public class PrefManager {
         return pref.getBoolean(context.getString(R.string.address), true);
     }
 
-    public boolean isNotes() {
+    public boolean isNote() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         if (pref == null) return true;
         return pref.getBoolean(context.getString(R.string.notes), true);
     }
 
-    public boolean isOrg() {
+    public boolean isOrganization() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         if (pref == null) return true;
         return pref.getBoolean(context.getString(R.string.organization), true);
@@ -121,12 +120,12 @@ public class PrefManager {
 
     public Map<String, Boolean> getConfig() {
         Map<String, Boolean> config = new HashMap<>();
-        config.put(Constant.FILTER_BY_NUMBER, isToFilterByNumber());
-        config.put(Constant.NUMBER, isNumber());
-        config.put(Constant.EMAIL, isEmail());
+        config.put(Constant.BFILTER_BY_NUMBER, isFilteredByNumber());
+        config.put(Constant.BNUMBER, isNumber());
+        config.put(Constant.BEMAIL, isEmail());
         config.put(Constant.BADDRESS, isAddress());
-        config.put(Constant.BNOTES, isNotes());
-        config.put(Constant.ORG, isOrg());
+        config.put(Constant.BNOTES, isNote());
+        config.put(Constant.BORGANIZATION, isOrganization());
         config.put(Constant.BRELATION, isRelation());
 
         return config;

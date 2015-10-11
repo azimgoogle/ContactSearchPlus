@@ -2,13 +2,11 @@ package com.letbyte.contact.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -193,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         RecyclerView.Adapter mAdapter = getRecyclerView().getAdapter();
 
 
-        boolean isToFilterPhoneNumber = PrefManager.on(this).isToFilterByNumber();
+        boolean isToFilterPhoneNumber = PrefManager.on(this).isFilteredByNumber();
 
         ContactClient.getInstance().addCommand(new ContactLoaderCommand(this, progressBar, mAdapter,
                 Constant.contactModelList, isToFilterPhoneNumber));
@@ -212,11 +210,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             ContactClient.getInstance().addCommand(new AddressLoaderCommand(this, progressBar, mAdapter,
                     Constant.contactModelList, isToFilterPhoneNumber));
 
-        isToload = PrefManager.on(this).isNotes();
+        isToload = PrefManager.on(this).isNote();
         if (isToload)
             ContactClient.getInstance().addCommand(new NotesLoaderCommand(this, progressBar, mAdapter, Constant.contactModelList));
 
-        isToload = PrefManager.on(this).isOrg();
+        isToload = PrefManager.on(this).isOrganization();
         if (isToload)
             ContactClient.getInstance().addCommand(new OrganizationLoaderCommand(this, progressBar, mAdapter, Constant.contactModelList));
 

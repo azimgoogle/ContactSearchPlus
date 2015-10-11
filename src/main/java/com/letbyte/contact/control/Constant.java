@@ -35,11 +35,11 @@ public interface Constant {
     String CONFIG = "config";
     String CODE = "code";
     int SUCCESS = 1;
-    String FILTER_BY_NUMBER = "filter_by_number";
-    String NUMBER = "number";
-    String EMAIL = "email";
+    String BFILTER_BY_NUMBER = "filter_by_number";
+    String BNUMBER = "number";
+    String BEMAIL = "email";
     String BADDRESS = "address";
     String BNOTES = "notes";
-    String ORG = "org";
+    String BORGANIZATION = "org";
     String BRELATION = "relation";
 }

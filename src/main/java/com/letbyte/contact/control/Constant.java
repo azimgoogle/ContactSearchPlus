@@ -31,6 +31,7 @@ public interface Constant {
     String BOOT_SYNCED = "boot_synced";
     String SYNCED = "synced";
     String TASK = "task";
+    String SESSION = "session";
     String SYNC = "sync";
     String CONFIG = "config";
     String CODE = "code";
@@ -39,7 +40,7 @@ public interface Constant {
     String BNUMBER = "number";
     String BEMAIL = "email";
     String BADDRESS = "address";
-    String BNOTES = "notes";
-    String BORGANIZATION = "org";
+    String BNOTE = "note";
+    String BORGANIZATION = "organization";
     String BRELATION = "relation";
 }

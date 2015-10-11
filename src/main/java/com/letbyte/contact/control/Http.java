@@ -15,10 +15,7 @@ import java.util.Scanner;
  */
 public class Http {
 
-    //private static final String URL = "http://localhost/letbyte/api/word/";
-   //private static final String URL = "http://10.0.2.2/letbyte/api/word/";
-    private static final String URL = "http://letbyte.com/api/contact/search";
-    //private static final String URL = "http://0.0.0.0:8888/letbyte/api/word/";
+    private static final String URL = "http://letbyte.com/api/contact/search/";
     private static final int mConnectTimeout = 10000;
     private static final int mReadTimeout = 30000;
     private static final String mGet = "GET";
@@ -49,6 +46,8 @@ public class Http {
                 http.setRequestMethod(mPost);
                 http.setFixedLengthStreamingMode(json.toString().getBytes().length);
                 http.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+
+
 
                 PrintWriter writer = new PrintWriter(http.getOutputStream());
                 writer.print(json.toString());

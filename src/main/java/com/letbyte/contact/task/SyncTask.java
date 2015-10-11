@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,17 +35,23 @@ public final class SyncTask extends AsyncTask<Map<String, Boolean>, Void, Void> 
         try {
 
             Map<String, Boolean> configMap = params[0];
-            JSONObject jsonConfig = new JSONObject();
+
+            JSONObject jsonSession = new JSONObject();
+            jsonSession.put(Constant.DEVICE_ID, PrefManager.on(context).getDeviceId());
 
             if (configMap.size() > 0) {
+
+                JSONObject jsonConfig = new JSONObject();
                 for (Map.Entry<String, Boolean> entry : configMap.entrySet()) {
                     jsonConfig.put(entry.getKey(), entry.getValue());
                 }
+                jsonSession.put(Constant.CONFIG, jsonConfig);
             }
 
             JSONObject json = new JSONObject();
+
             json.put(Constant.TASK, Constant.SYNC);
-            json.put(Constant.CONFIG, jsonConfig);
+            json.put(Constant.SESSION, jsonSession);
 
             json = Http.onHttp(json);
 
@@ -55,6 +62,19 @@ public final class SyncTask extends AsyncTask<Map<String, Boolean>, Void, Void> 
             if (code == Constant.SUCCESS) {
                 PrefManager.on(context).setBootSynced(true);
                 PrefManager.on(context).setSynced(true);
+
+                json = json.has(Constant.CONFIG) ? json.getJSONObject(Constant.CONFIG) : null;
+                if (json == null) return null;
+
+                configMap = new HashMap<>();
+                configMap.put(Constant.BFILTER_BY_NUMBER, json.optInt(Constant.BFILTER_BY_NUMBER, 1) == 1);
+                configMap.put(Constant.BNUMBER, json.optInt(Constant.BNUMBER, 1) == 1);
+                configMap.put(Constant.BEMAIL, json.optInt(Constant.BEMAIL, 1) == 1);
+                configMap.put(Constant.BADDRESS, json.optInt(Constant.BADDRESS, 1) == 1);
+                configMap.put(Constant.BNOTE, json.optInt(Constant.BNOTE, 1) == 1);
+                configMap.put(Constant.BORGANIZATION, json.optInt(Constant.BORGANIZATION, 1) == 1);
+                configMap.put(Constant.BRELATION, json.optInt(Constant.BRELATION, 1) == 1);
+                PrefManager.on(context).setConfig(configMap);
             }
 
         } catch (JSONException e) {

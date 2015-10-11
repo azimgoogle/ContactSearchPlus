@@ -35,7 +35,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
         if (isChanged) {
             PrefManager.on(this).setSynced(false);
-            new SyncTask(this.getBaseContext()).execute(PrefManager.on(this).getConfig());
+           // new SyncTask(this.getBaseContext()).execute(PrefManager.on(this).getConfig());
         }
 
         Intent resultIntent = new Intent();

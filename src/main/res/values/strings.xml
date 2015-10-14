@@ -24,7 +24,14 @@
     <string name="relation">Relations</string>
     <string name="relation_summary">Search for contact relations</string>
 
+    <string name="call_on_single_tap">Call on single tap</string>
+    <string name="call_on_single_tap_summary">Enable calling on single tap and Context menu on long tap, viceversa otherwise</string>
+
     <string name="sort_order">Contact Sorting Order</string>
     <string name="sort_order_summary">Select freuently contacted contacts should get priority or not</string>
     <string name="title_activity_settings">SettingsActivity</string>
+
+    <string name="menu_call">Call</string>
+    <string name="menu_message">Message</string>
+    <string name="menu_show_details">Show Details</string>
 </resources>

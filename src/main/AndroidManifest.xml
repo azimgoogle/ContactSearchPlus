@@ -29,9 +29,9 @@
             android:label="@string/title_activity_settings"
             android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
+            <!--<meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.letbyte.contact.activity.MainActivity" />
+                android:value="com.letbyte.contact.activity.MainActivity" />-->
         </activity>
     </application>
 

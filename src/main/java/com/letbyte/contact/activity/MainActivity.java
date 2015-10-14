@@ -11,15 +11,18 @@ import android.provider.ContactsContract;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             Constant.NOTES,
             Constant.ORGANIZATION,
             Constant.RELATION};
+    private boolean isToCallOnSingleTap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +76,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onItemClick(View view, int position) {
                 final long contactID = adapter.getContactIDbyPosition(position);
-                showContactDetailsView(contactID);
+                if (isToCallOnSingleTap)
+                    makeCall(contactID);
+                else
+                    showContextMenu(contactID, view);
             }
 
             @Override
             public void onItemLongClick(View view, int position) {
-
+                final long contactID = adapter.getContactIDbyPosition(position);
+                if (isToCallOnSingleTap)
+                    showContextMenu(contactID, view);
+                else
+                    makeCall(contactID);
             }
         }));
 
@@ -90,6 +101,34 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         } else if (!synced) {
             new SyncTask(this.getBaseContext()).execute(PrefManager.on(this.getBaseContext()).getConfig());
         }
+    }
+
+    private void showContextMenu(final long contactID, View view) {
+        //Creating the instance of PopupMenu
+        PopupMenu popup = new PopupMenu(MainActivity.this, view);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater().inflate(R.menu.poupup_menu, popup.getMenu());
+
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                Toast.makeText(MainActivity.this, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                switch(item.getItemId()) {
+                    case R.id.call :
+                        makeCall(contactID);
+                        break;
+                    case R.id.message:
+                        sendMessage(contactID);
+                        break;
+                    case R.id.details:
+                        showContactDetailsView(contactID);
+                        break;
+                }
+                return true;
+            }
+        });
+        popup.setGravity(Gravity.RIGHT);
+        popup.show();
     }
 
     private void showContactDetailsView(long contactID) {
@@ -221,6 +260,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         isToload = PrefManager.on(this).isRelation();
         if (isToload)
             ContactClient.getInstance().addCommand(new RelationLoaderCommand(this, progressBar, mAdapter, Constant.contactModelList));
+
+        isToCallOnSingleTap = PrefManager.on(this).isTocallOnSingleTap();
     }
 
     private List<Contact> filter(List<Contact> contacts, String query) {

@@ -81,7 +81,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
     private void moveItem(int fromPosition, int toPosition) {
         final Contact contact = contacts.remove(fromPosition);
         contacts.add(toPosition, contact);
-        notifyItemMoved(fromPosition, toPosition);
+        //notifyItemMoved(fromPosition, toPosition);
     }
 
     private void removeItem(int position) {

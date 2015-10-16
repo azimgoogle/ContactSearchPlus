@@ -1,22 +1,24 @@
 package com.letbyte.contact.loader;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import android.Manifest;
 import android.content.ContentProviderClient;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.RemoteException;
 import android.provider.ContactsContract.Contacts;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 
 import com.letbyte.contact.adapter.ContactAdapter;
 import com.letbyte.contact.control.Constant;
 import com.letbyte.contact.data.model.Contact;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //Use separate thread for search and Query to the native-phonebook
 public class ContactLoaderCommand implements Command {
@@ -26,6 +28,7 @@ public class ContactLoaderCommand implements Command {
     private RecyclerView.Adapter mAdapter;
     private List<Contact> mContactModelList;
     private boolean mIsToFilterHasPhoneNumber;
+    private Context mContext;
 
     public ContactLoaderCommand(Context context, ProgressBar progressBar, RecyclerView.Adapter adapter,
                                 List<Contact> contactModelList, boolean isToFilterHasPhoneNumber) {
@@ -34,6 +37,7 @@ public class ContactLoaderCommand implements Command {
         this.mContactModelList = contactModelList;
         contactClient = context.getContentResolver().acquireContentProviderClient(Contacts.CONTENT_URI);
         this.mIsToFilterHasPhoneNumber = isToFilterHasPhoneNumber;
+        mContext = context;
     }
 
 
@@ -46,6 +50,9 @@ public class ContactLoaderCommand implements Command {
 
         @Override
           protected ArrayList<Contact> doInBackground(Void... params) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    mContext.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
+                    return null;
             if (contactClient != null) {
                 Cursor contactCursor = null;
                 try {

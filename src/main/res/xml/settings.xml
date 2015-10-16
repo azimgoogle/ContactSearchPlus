@@ -11,6 +11,20 @@
     <PreferenceCategory android:title="@string/action_settings" >
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="@string/call_on_single_tap"
+            android:title="@string/call_on_single_tap"
+            android:summary="@string/call_on_single_tap_summary" >
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/search_in_phone_numbers"
+            android:title="@string/search_in_phone_numbers"
+            android:summary="@string/search_in_phone_numbers_summary" >
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
             android:key="@string/phone_number"
             android:title="@string/phone_number"
             android:summary="@string/phone_number_summary" >

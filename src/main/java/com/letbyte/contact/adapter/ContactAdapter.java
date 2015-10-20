@@ -75,7 +75,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
 
     private void addItem(int position, Contact contact) {
         contacts.add(position, contact);
-        notifyItemInserted(position);
+        //notifyItemInserted(position);
     }
 
     private void moveItem(int fromPosition, int toPosition) {

@@ -3,6 +3,7 @@ package com.letbyte.contact.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
@@ -22,8 +23,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.letbyte.contact.AnalyticsTrackers;
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
 import com.letbyte.contact.control.Constant;
@@ -31,6 +36,7 @@ import com.letbyte.contact.control.PrefManager;
 import com.letbyte.contact.data.model.Contact;
 import com.letbyte.contact.databinding.ActivityMainBinding;
 import com.letbyte.contact.drawable.RecyclerViewDividerItemDecorator;
+import com.letbyte.contact.listener.ContactLoadingFinishedListener;
 import com.letbyte.contact.listener.RecyclerItemClickListener;
 import com.letbyte.contact.loader.AddressLoaderCommand;
 import com.letbyte.contact.loader.ContactClient;
@@ -47,7 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, ContactLoadingFinishedListener {
 
     private ActivityMainBinding binding;
     private final int[] searchIndexes = new int[]{
@@ -57,8 +63,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             Constant.ADDRESS,
             Constant.NOTES,
             Constant.ORGANIZATION,
-            Constant.RELATION};
+            Constant.RELATION};//Change final and search indexes during Adapter syncing,to reduce search domain
     private boolean isToCallOnSingleTap;
+    private SearchView mSearchView;
+    private Tracker tracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,16 +87,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (isToCallOnSingleTap)
                     makeCall(contactID);
                 else
-                    showContextMenu(contactID, view);
+                    showContactDetailsView(contactID);
             }
 
             @Override
             public void onItemLongClick(View view, int position) {
                 final long contactID = adapter.getContactIDbyPosition(position);
-                if (isToCallOnSingleTap)
-                    showContextMenu(contactID, view);
-                else
-                    makeCall(contactID);
+                showContextMenu(contactID, view);
             }
         }));
 
@@ -101,6 +106,25 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         } else if (!synced) {
             new SyncTask(this.getBaseContext()).execute(PrefManager.on(this.getBaseContext()).getConfig());
         }
+        int[] attrs = new int[]{R.attr.selectableItemBackground};
+        TypedArray typedArray = obtainStyledAttributes(attrs);
+        int backgroundResource = typedArray.getResourceId(0, 0);
+        getRecyclerView().setBackgroundResource(backgroundResource);
+
+        final AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+
+        AnalyticsTrackers.initialize(getApplicationContext());
+        tracker = AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
+        tracker.setScreenName(getClass().getSimpleName());
+    }
+
+
+    protected void onResume() {
+        super.onResume();
+        tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     private void showContextMenu(final long contactID, View view) {
@@ -112,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(MainActivity.this, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
                 switch(item.getItemId()) {
                     case R.id.call :
                         makeCall(contactID);
@@ -159,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             return false;
         Uri uri = Uri.parse("smsto:" + number);
         Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-        intent.putExtra("sms_body", "The SMS text");
+//        intent.putExtra("sms_body", "The SMS text");
         startActivity(intent);
         return true;
     }
@@ -170,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         searchMenuItem.expandActionView();
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        mSearchView = searchView;
         searchView.setOnQueryTextListener(this);
         return true;
     }
@@ -234,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         boolean isToFilterPhoneNumber = PrefManager.on(this).isFilteredByNumber();
 
+        ContactClient.getInstance().setContactLoadingFinishedListener(this);
         ContactClient.getInstance().addCommand(new ContactLoaderCommand(this, progressBar, mAdapter,
                 Constant.contactModelList, isToFilterPhoneNumber));
 
@@ -286,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         List<String> searchList;
         boolean isMatched;
         int indexOfSubString;
-        String temp, subString;
+        String subString;
         for (int i = 0; i < contacts.size(); i++) {
             Contact contact = contacts.get(i);
             isMatched = false;
@@ -309,10 +335,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                         }
                         filteredContacts.add(contact);
-
-                        Spannable s;
-                        String st;
-
                         break;
 
                     }
@@ -323,5 +345,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         return filteredContacts;
+    }
+
+    @Override
+    public void contactLoadingFinished() {
+        if(mSearchView != null) {
+            String filterString = mSearchView.getQuery().toString();
+            onQueryTextChange(filterString);
+        }
     }
 }

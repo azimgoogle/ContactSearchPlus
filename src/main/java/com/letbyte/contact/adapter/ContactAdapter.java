@@ -62,7 +62,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             public void run() {
                 notifyDataSetChanged();
             }
-        }, 1500);
+        }, 1000);
     }
 
     public void applyTo(List<Contact> contacts) {
@@ -75,17 +75,20 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
 
     private void addItem(int position, Contact contact) {
         contacts.add(position, contact);
-        //notifyItemInserted(position);
+        if (getItemCount() > 100) return;
+        notifyItemInserted(position);
     }
 
     private void moveItem(int fromPosition, int toPosition) {
         final Contact contact = contacts.remove(fromPosition);
         contacts.add(toPosition, contact);
-        //notifyItemMoved(fromPosition, toPosition);
+        if (getItemCount() > 100) return;
+        notifyItemMoved(fromPosition, toPosition);
     }
 
     private void removeItem(int position) {
         contacts.remove(position);
+        if (getItemCount() > 100) return;
         notifyItemRemoved(position);
     }
 

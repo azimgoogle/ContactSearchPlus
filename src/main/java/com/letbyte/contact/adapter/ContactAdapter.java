@@ -66,29 +66,38 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
     }
 
     public void applyTo(List<Contact> contacts) {
-        applyToRemove(contacts);
-        applyToAdd(contacts);
-        applyToMove(contacts);
+        if(contacts.size() > 100) {//More intelligence can be applied
+        // by measuring time difference of notify data set changes
+            this.contacts.clear();
+            this.contacts.addAll(contacts);
+            notifyDataSetChanged();
+        } else {
+//            long t1 = System.currentTimeMillis();
+            applyToRemove(contacts);
+            applyToAdd(contacts);
+            applyToMove(contacts);
 
-        postNotify();
+            postNotify();
+//            long t2 = System.currentTimeMillis();
+        }
     }
 
     private void addItem(int position, Contact contact) {
         contacts.add(position, contact);
-        if (getItemCount() > 100) return;
+//        if (getItemCount() > 100) return;
         notifyItemInserted(position);
     }
 
     private void moveItem(int fromPosition, int toPosition) {
         final Contact contact = contacts.remove(fromPosition);
         contacts.add(toPosition, contact);
-        if (getItemCount() > 100) return;
+//        if (getItemCount() > 100) return;
         notifyItemMoved(fromPosition, toPosition);
     }
 
     private void removeItem(int position) {
         contacts.remove(position);
-        if (getItemCount() > 100) return;
+//        if (getItemCount() > 100) return;
         notifyItemRemoved(position);
     }
 

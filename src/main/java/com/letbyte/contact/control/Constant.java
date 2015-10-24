@@ -13,7 +13,7 @@ import java.util.Map;
 public interface Constant {
 
     String EMPTY_STRING = "";
-    String COMMA_STRING = ",";
+    String COMMA_STRING = "";
     int DISPLAY_NAME = 0;
     int PHONE_NUMBER = 1;
     int MAIL_ADDRESS = 2;
@@ -23,7 +23,7 @@ public interface Constant {
     int RELATION = 6;
 
     int REQUESTCODE_SETTINGS = 10;
-    String PHONE_NUMBER_REG_EX = "[^0-9]+";//"([+]?[0-9]+)+";//\\d+
+    String PHONE_NUMBER_REG_EX = "[^0-9]+";//\\d+
     Map<Long, Integer> cIDArrayListIndexMap = new HashMap<>();
     List<Contact> contactModelList = new ArrayList<>();
 

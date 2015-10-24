@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Contact Search</string>
-    <!--<string name="app_name">Contact Search Plus</string>-->
+    <string name="app_name">contact</string>
     <string name="action_settings">Settings</string>
 
     <!-- Preference Settings -->
@@ -25,8 +24,8 @@
     <string name="relation">Relations</string>
     <string name="relation_summary">Search for contact relations</string>
 
-    <string name="single_tap_action">Single tap action</string>
-    <string name="single_tap_action_summary">If selected, enable calling on single tap. Otherwise, show details of contact</string>
+    <string name="call_on_single_tap">Call on single tap</string>
+    <string name="call_on_single_tap_summary">Enable calling on single tap and Context menu on long tap, viceversa otherwise</string>
 
     <string name="sort_order">Contact Sorting Order</string>
     <string name="sort_order_summary">Select freuently contacted contacts should get priority or not</string>
@@ -35,9 +34,4 @@
     <string name="menu_call">Call</string>
     <string name="menu_message">Message</string>
     <string name="menu_show_details">Show Details</string>
-
-    <!-- AdMob -->
-    <string name="test_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="home_page_banner_ad_unit_id">ca-app-pub-9664359908202679/2179765749</string>
-
 </resources>

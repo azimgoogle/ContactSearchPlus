@@ -170,7 +170,7 @@ public class PrefManager {
     public boolean isTocallOnSingleTap() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         if (pref == null) return true;
-        return pref.getBoolean(context.getString(R.string.single_tap_action), true);
+        return pref.getBoolean(context.getString(R.string.call_on_single_tap), true);
     }
 
     public Map<String, Boolean> getConfig() {

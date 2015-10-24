@@ -11,9 +11,9 @@
     <PreferenceCategory android:title="@string/action_settings" >
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="@string/call_on_single_tap"
-            android:title="@string/call_on_single_tap"
-            android:summary="@string/call_on_single_tap_summary" >
+            android:key="@string/single_tap_action"
+            android:title="@string/single_tap_action"
+            android:summary="@string/single_tap_action_summary" >
         </CheckBoxPreference>
 
         <CheckBoxPreference

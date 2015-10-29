@@ -142,14 +142,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
-    @Override
+/*    @Override
     public void onBackPressed() {
-       /* if (logic.getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
+       *//* if (logic.getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
             logic.getDrawerLayout().closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-        }*/
-    }
+        }*//*
+
+    }*/
 
     private void showContextMenu(final long contactID, View view) {
         //Creating the instance of PopupMenu

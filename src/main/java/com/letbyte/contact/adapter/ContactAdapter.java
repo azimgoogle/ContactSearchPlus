@@ -157,7 +157,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             ((com.letbyte.contact.databinding.ContactBinding) holder.getBinding()).simpleDraweeView.setImageURI(uri);
 */
         } else {
-            ((ContactBinding) holder.getBinding()).imgIcon.setImageResource(R.mipmap.ic_launcher);
+            ((ContactBinding) holder.getBinding()).imgIcon.setImageResource(R.drawable.ic_account_circle_24dp);
         }
 
 

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -139,6 +140,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         tracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
+    @Override
+    public void onBackPressed() {
+       /* if (logic.getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
+            logic.getDrawerLayout().closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }*/
     }
 
     private void showContextMenu(final long contactID, View view) {

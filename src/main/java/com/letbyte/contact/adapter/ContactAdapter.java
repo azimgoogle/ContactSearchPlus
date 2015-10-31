@@ -53,8 +53,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
     }
 
     private ModelFilter filter;
+
     public Filter getFilter() {
-        if(filter == null)
+        if (filter == null)
             filter = new ModelFilter();
         return filter;
     }
@@ -79,8 +80,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
     }
 
     public void applyTo(List<Contact> contacts) {
-        if(contacts.size() > 100) {//More intelligence can be applied
-        // by measuring time difference of notify data set changes
+        if (contacts.size() > 100) {//More intelligence can be applied
+            // by measuring time difference of notify data set changes
             this.contactsToView.clear();
             this.contactsToView.addAll(contacts);
             notifyDataSetChanged();
@@ -180,11 +181,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             ((com.letbyte.contact.databinding.ContactBinding) holder.getBinding()).simpleDraweeView.setImageURI(uri);*/
 
         } else {
-<<<<<<< HEAD
             imageView.setImageResource(R.mipmap.ic_launcher);
-=======
             ((ContactBinding) holder.getBinding()).imgIcon.setImageResource(R.drawable.ic_account_circle_24dp);
->>>>>>> 07da8cae5c25cea17e7e35982d23a11791b12f6b
+
         }
     }
 
@@ -205,8 +204,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
     }
 
     static long t1 = 0;
-    private class ModelFilter extends Filter
-    {
+
+    private class ModelFilter extends Filter {
         private String st = null;
         private final int[] searchIndexes = new int[]{
                 Constant.DISPLAY_NAME,
@@ -218,7 +217,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
                 Constant.RELATION};
 
         @Override
-        protected FilterResults performFiltering(CharSequence constraint)  {
+        protected FilterResults performFiltering(CharSequence constraint) {
             t1 = System.currentTimeMillis();
             String filterString = constraint.toString(), originalFilterString = filterString;
             st = filterString;
@@ -230,7 +229,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             final ArrayList<Contact> nlist = new ArrayList<>(count);
             Contact contactModel;
 
-            if(constraint == null || constraint.length() == 0) {
+            if (constraint == null || constraint.length() == 0) {
                 for (int i = 0; i < count; i++) {
                     contactModel = list.get(i);
                     contactModel.setSubText(Constant.EMPTY_STRING);
@@ -246,15 +245,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
                 for (int i = 0; i < count; i++) {
                     contactModel = list.get(i);
                     isMatched = false;
-                    for(int index : searchIndexes) {
+                    for (int index : searchIndexes) {
                         searchList = contactModel.getDataIndicesByDataIndex(index);
 //                        searchList = contactModel.getDataList(index);
-                        for(String value : searchList) {
+                        for (String value : searchList) {
                             indexOfSubString = value.indexOf(filterString);
-                            if(indexOfSubString != -1) {
+                            if (indexOfSubString != -1) {
                                 isMatched = true;
 
-                                if(index != Constant.DISPLAY_NAME) {//If display name then manipulate display name particularly
+                                if (index != Constant.DISPLAY_NAME) {//If display name then manipulate display name particularly
                                     subString = value.substring(0, indexOfSubString);
                                     subString += "<b>" + originalFilterString + "</b>";
                                     subString += value.substring(indexOfSubString + originalFilterString.length(), value.length());
@@ -264,7 +263,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
                                 break;
                             }
                         }
-                        if(isMatched)
+                        if (isMatched)
                             break;
                     }
                 }
@@ -281,9 +280,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            contactsToView = (ArrayList<Contact>)results.values;
+            contactsToView = (ArrayList<Contact>) results.values;
             notifyDataSetChanged();
-            System.out.println("[Azim-time-check]::"+st + "::" + (System.currentTimeMillis() - t1));
+            System.out.println("[Azim-time-check]::" + st + "::" + (System.currentTimeMillis() - t1));
         }
 
     }

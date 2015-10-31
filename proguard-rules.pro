@@ -21,5 +21,3 @@
 ## https://square.github.io/picasso/ ##
 
 -dontwarn com.squareup.okhttp.**
-## SearchView
--keep class android.support.v7.widget.SearchView { *; }

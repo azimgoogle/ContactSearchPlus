@@ -2,8 +2,12 @@ package com.letbyte.contact.adapter;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -180,11 +184,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             ((com.letbyte.contact.databinding.ContactBinding) holder.getBinding()).simpleDraweeView.setImageURI(uri);*/
 
         } else {
-<<<<<<< HEAD
             imageView.setImageResource(R.mipmap.ic_launcher);
-=======
-            ((ContactBinding) holder.getBinding()).imgIcon.setImageResource(R.drawable.ic_account_circle_24dp);
->>>>>>> 07da8cae5c25cea17e7e35982d23a11791b12f6b
         }
     }
 
@@ -205,9 +205,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
     }
 
     static long t1 = 0;
+    //Make a filter command to cancel previous tasks where user write query text too early
+    // before finishing existing filter task
     private class ModelFilter extends Filter
     {
-        private String st = null;
+        private String st = null, oldString = Constant.EMPTY_STRING;
         private final int[] searchIndexes = new int[]{
                 Constant.DISPLAY_NAME,
                 Constant.PHONE_NUMBER,
@@ -216,6 +218,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
                 Constant.NOTES,
                 Constant.ORGANIZATION,
                 Constant.RELATION};
+        private boolean isThereNewQueryText;//volatile??
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint)  {
@@ -225,24 +228,25 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             //Rather pattern matching, manual checking could be more faster
 //            boolean isAllDigit = pattern.matcher(filterString).matches();
             FilterResults results = new FilterResults();
-            final List<Contact> list = contactsOrginal;
-            final int count = list.size();
-            final ArrayList<Contact> nlist = new ArrayList<>(count);
-            Contact contactModel;
+            final List<Contact> list;
+            final List<Contact> nList;
 
             if(constraint == null || constraint.length() == 0) {
-                for (int i = 0; i < count; i++) {
-                    contactModel = list.get(i);
-                    contactModel.setSubText(Constant.EMPTY_STRING);
-                    nlist.add(contactModel);
+                nList = contactsOrginal;
+                Spannable spannable = Spannable.Factory.getInstance().newSpannable(Constant.EMPTY_STRING);
+                for (Contact contactModel : nList) {
+                    contactModel.setSubTextSpanned(spannable);
                 }
             } else {
-
+                list = originalFilterString.length() > oldString.length() ? contactsToView : contactsOrginal;
+                final int count = list.size();
+                nList = new ArrayList<>(count);
                 filterString = filterString.toLowerCase();
+                Contact contactModel;
                 List<String> searchList;
                 boolean isMatched;
                 int indexOfSubString;
-                String temp, subString;
+                String subString;
                 for (int i = 0; i < count; i++) {
                     contactModel = list.get(i);
                     isMatched = false;
@@ -255,12 +259,21 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
                                 isMatched = true;
 
                                 if(index != Constant.DISPLAY_NAME) {//If display name then manipulate display name particularly
-                                    subString = value.substring(0, indexOfSubString);
+                                    /*subString = value.substring(0, indexOfSubString);
                                     subString += "<b>" + originalFilterString + "</b>";
                                     subString += value.substring(indexOfSubString + originalFilterString.length(), value.length());
-                                    contactModel.setSubText(subString);
+                                    contactModel.setSubTextSpanned(Html.fromHtml(subString));*/
+
+                                    subString = value.substring(0, indexOfSubString);
+                                    subString +=  originalFilterString ;
+                                    subString += value.substring(indexOfSubString + originalFilterString.length(), value.length());
+                                    SpannableString spannableString = new SpannableString(subString);
+                                    spannableString.setSpan(new StyleSpan(Typeface.BOLD), indexOfSubString,
+                                            indexOfSubString + originalFilterString.length(), 0);
+                                    //Faster than HtmlFormat
+                                    contactModel.setSubTextSpanned(spannableString);
                                 }
-                                nlist.add(contactModel);
+                                nList.add(contactModel);
                                 break;
                             }
                         }
@@ -271,11 +284,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             }
 
 
-            results.values = nlist;
-            results.count = nlist.size();
-
+            results.values = nList;
+            results.count = nList.size();
+            oldString = originalFilterString;
             return results;
-
         }
 
         @SuppressWarnings("unchecked")

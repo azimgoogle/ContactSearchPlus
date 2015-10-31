@@ -27,7 +27,7 @@
             android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
             android:gravity="center_vertical"
-            android:src="@drawable/ic_account_circle_24dp" />"
+            android:src="@mipmap/ic_launcher" />"
 
         <!--<com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/simpleDraweeView"

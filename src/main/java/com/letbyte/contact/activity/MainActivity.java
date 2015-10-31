@@ -28,8 +28,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.letbyte.contact.control.Control;
-import com.letbyte.contact.tracker.AnalyticsTrackers;
+import com.letbyte.contact.AnalyticsTrackers;
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
 import com.letbyte.contact.control.Constant;
@@ -68,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private boolean isToCallOnSingleTap;
     private SearchView mSearchView;
     private Tracker tracker;
+    private ContactAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +79,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         getRecyclerView().setHasFixedSize(true);
         getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
         getRecyclerView().addItemDecoration(new RecyclerViewDividerItemDecorator(this, null));
-        final ContactAdapter adapter = new ContactAdapter(R.layout.contact, new ArrayList<Contact>());
-        getRecyclerView().setAdapter(adapter);
+        mAdapter = new ContactAdapter(R.layout.contact, Constant.contactModelList);
+        getRecyclerView().setAdapter(mAdapter);
         getRecyclerView().addOnItemTouchListener(new RecyclerItemClickListener(this, getRecyclerView(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                final long contactID = adapter.getContactIDbyPosition(position);
+                final long contactID = mAdapter.getContactIDbyPosition(position);
                 if (isToCallOnSingleTap)
                     makeCall(contactID);
                 else
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             @Override
             public void onItemLongClick(View view, int position) {
-                final long contactID = adapter.getContactIDbyPosition(position);
+                final long contactID = mAdapter.getContactIDbyPosition(position);
                 showContextMenu(contactID, view);
             }
         }));
@@ -112,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         int backgroundResource = typedArray.getResourceId(0, 0);
         getRecyclerView().setBackgroundResource(backgroundResource);
 
-        getAdView().loadAd(new AdRequest.Builder().build());
+        final AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
 
         AnalyticsTrackers.initialize(getApplicationContext());
@@ -120,24 +122,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         tracker.setScreenName(getClass().getSimpleName());
     }
 
-    private AdView getAdView() {
-        return (AdView) findViewById(R.id.adView);
-    }
 
-/*    private View getAdViewLayout() {
-        return  findViewById(R.id.adViewLayout);
-    }*/
-
-    @Override
     protected void onResume() {
         super.onResume();
-
-        if (Control.getIsNetwork(this)) {
-            getAdView().setVisibility(View.VISIBLE);
-        } else {
-            getAdView().setVisibility(View.GONE);
-        }
-
         tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
@@ -151,8 +138,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
 //                Toast.makeText(MainActivity.this, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
-                switch (item.getItemId()) {
-                    case R.id.call:
+                switch(item.getItemId()) {
+                    case R.id.call :
                         makeCall(contactID);
                         break;
                     case R.id.message:
@@ -246,8 +233,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        final List<Contact> filteredContacts = filter(Constant.contactModelList, newText);
-        apply(filteredContacts);
+        /*final List<Contact> filteredContacts = filter(Constant.contactModelList, newText);
+        apply(filteredContacts);*/
+        mAdapter.getFilter().filter(newText);
         return true;
     }
 
@@ -363,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public void contactLoadingFinished() {
-        if (mSearchView != null) {
+        if(mSearchView != null) {
             String filterString = mSearchView.getQuery().toString();
             onQueryTextChange(filterString);
         }

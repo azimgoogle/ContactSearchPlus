@@ -45,13 +45,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
         }
     }
 
-    private List<Contact> contactsToView, contactsOrginal;
+    private List<Contact> contactsToView, contactsOriginal;
     private int viewResourceId;
     private Handler handler;
 
     public ContactAdapter(int viewResourceId, List<Contact> contacts) {
         this.viewResourceId = viewResourceId;
-        this.contactsOrginal = contacts;
+        this.contactsOriginal = contacts;
         this.contactsToView = new ArrayList<>(contacts);
         handler = new Handler();
     }
@@ -186,7 +186,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
 
         } else {
 //            imageView.setImageResource(R.drawable.ic_account_circle_24dp);
-            imageView.setImageResource(R.mipmap.ic_launcher);
+            imageView.setImageResource(R.drawable.ic_account_circle_24dp);
         }
     }
 
@@ -234,13 +234,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             final List<Contact> nList;
 
             if(constraint == null || constraint.length() == 0) {
-                nList = contactsOrginal;
+                nList = contactsOriginal;
                 Spannable spannable = Spannable.Factory.getInstance().newSpannable(Constant.EMPTY_STRING);
                 for (Contact contactModel : nList) {
                     contactModel.setSubTextSpanned(spannable);
                 }
             } else {
-                list = originalFilterString.length() > oldString.length() ? contactsToView : contactsOrginal;
+                list = originalFilterString.length() > oldString.length() ? contactsToView : contactsOriginal;
                 final int count = list.size();
                 nList = new ArrayList<>(count);
                 filterString = filterString.toLowerCase();

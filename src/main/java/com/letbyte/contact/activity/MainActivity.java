@@ -28,7 +28,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.letbyte.contact.AnalyticsTrackers;
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
 import com.letbyte.contact.control.Constant;
@@ -47,6 +46,7 @@ import com.letbyte.contact.loader.OrganizationLoaderCommand;
 import com.letbyte.contact.loader.PhoneNumberLoaderCommand;
 import com.letbyte.contact.loader.RelationLoaderCommand;
 import com.letbyte.contact.task.SyncTask;
+import com.letbyte.contact.tracker.AnalyticsTrackers;
 import com.letbyte.contact.utility.ContactUtility;
 
 import java.util.ArrayList;
@@ -127,6 +127,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onResume();
         tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
+
+/*    @Override
+    public void onBackPressed() {
+       *//* if (logic.getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
+            logic.getDrawerLayout().closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }*//*
+
+    }*/
 
     private void showContextMenu(final long contactID, View view) {
         //Creating the instance of PopupMenu

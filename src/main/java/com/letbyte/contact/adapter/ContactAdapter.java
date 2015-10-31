@@ -185,12 +185,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             ((com.letbyte.contact.databinding.ContactBinding) holder.getBinding()).simpleDraweeView.setImageURI(uri);*/
 
         } else {
+//            imageView.setImageResource(R.drawable.ic_account_circle_24dp);
             imageView.setImageResource(R.mipmap.ic_launcher);
-<<<<<<< HEAD
-=======
-            ((ContactBinding) holder.getBinding()).imgIcon.setImageResource(R.drawable.ic_account_circle_24dp);
-
->>>>>>> 9eaf4d4aaff5828159f32876d543acfb68bca801
         }
     }
 
@@ -211,17 +207,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
     }
 
     static long t1 = 0;
-<<<<<<< HEAD
     //Make a filter command to cancel previous tasks where user write query text too early
     // before finishing existing filter task
     private class ModelFilter extends Filter
     {
         private String st = null, oldString = Constant.EMPTY_STRING;
-=======
-
-    private class ModelFilter extends Filter {
-        private String st = null;
->>>>>>> 9eaf4d4aaff5828159f32876d543acfb68bca801
         private final int[] searchIndexes = new int[]{
                 Constant.DISPLAY_NAME,
                 Constant.PHONE_NUMBER,
@@ -243,19 +233,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             final List<Contact> list;
             final List<Contact> nList;
 
-<<<<<<< HEAD
             if(constraint == null || constraint.length() == 0) {
                 nList = contactsOrginal;
                 Spannable spannable = Spannable.Factory.getInstance().newSpannable(Constant.EMPTY_STRING);
                 for (Contact contactModel : nList) {
                     contactModel.setSubTextSpanned(spannable);
-=======
-            if (constraint == null || constraint.length() == 0) {
-                for (int i = 0; i < count; i++) {
-                    contactModel = list.get(i);
-                    contactModel.setSubText(Constant.EMPTY_STRING);
-                    nlist.add(contactModel);
->>>>>>> 9eaf4d4aaff5828159f32876d543acfb68bca801
                 }
             } else {
                 list = originalFilterString.length() > oldString.length() ? contactsToView : contactsOrginal;
@@ -277,14 +259,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
                             indexOfSubString = value.indexOf(filterString);
                             if (indexOfSubString != -1) {
                                 isMatched = true;
-
-<<<<<<< HEAD
                                 if(index != Constant.DISPLAY_NAME) {//If display name then manipulate display name particularly
                                     /*subString = value.substring(0, indexOfSubString);
-=======
-                                if (index != Constant.DISPLAY_NAME) {//If display name then manipulate display name particularly
-                                    subString = value.substring(0, indexOfSubString);
->>>>>>> 9eaf4d4aaff5828159f32876d543acfb68bca801
                                     subString += "<b>" + originalFilterString + "</b>";
                                     subString += value.substring(indexOfSubString + originalFilterString.length(), value.length());
                                     contactModel.setSubTextSpanned(Html.fromHtml(subString));*/

@@ -9,13 +9,8 @@ android {
         applicationId 'com.letbyte.contact'
         minSdkVersion 16
         targetSdkVersion 23
-<<<<<<< HEAD
-        versionCode 10
-        versionName '1.0'
-=======
         versionCode 15
         versionName '1.5'
->>>>>>> 9eaf4d4aaff5828159f32876d543acfb68bca801
     }
 
     buildTypes {

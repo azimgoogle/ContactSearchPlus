@@ -263,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return (ProgressBar) findViewById(R.id.progressBar);
     }
 
+    //Give priority to frequent contacts by providing options at settings MUST TODO
     private void syncAdapter() {
         ProgressBar progressBar = getProgressBar();
         progressBar.setVisibility(View.VISIBLE);

@@ -57,8 +57,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
     }
 
     private ModelFilter filter;
+
     public Filter getFilter() {
-        if(filter == null)
+        if (filter == null)
             filter = new ModelFilter();
         return filter;
     }
@@ -83,8 +84,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
     }
 
     public void applyTo(List<Contact> contacts) {
-        if(contacts.size() > 100) {//More intelligence can be applied
-        // by measuring time difference of notify data set changes
+        if (contacts.size() > 100) {//More intelligence can be applied
+            // by measuring time difference of notify data set changes
             this.contactsToView.clear();
             this.contactsToView.addAll(contacts);
             notifyDataSetChanged();
@@ -185,6 +186,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
 
         } else {
             imageView.setImageResource(R.mipmap.ic_launcher);
+<<<<<<< HEAD
+=======
+            ((ContactBinding) holder.getBinding()).imgIcon.setImageResource(R.drawable.ic_account_circle_24dp);
+
+>>>>>>> 9eaf4d4aaff5828159f32876d543acfb68bca801
         }
     }
 
@@ -205,11 +211,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
     }
 
     static long t1 = 0;
+<<<<<<< HEAD
     //Make a filter command to cancel previous tasks where user write query text too early
     // before finishing existing filter task
     private class ModelFilter extends Filter
     {
         private String st = null, oldString = Constant.EMPTY_STRING;
+=======
+
+    private class ModelFilter extends Filter {
+        private String st = null;
+>>>>>>> 9eaf4d4aaff5828159f32876d543acfb68bca801
         private final int[] searchIndexes = new int[]{
                 Constant.DISPLAY_NAME,
                 Constant.PHONE_NUMBER,
@@ -221,7 +233,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
         private boolean isThereNewQueryText;//volatile??
 
         @Override
-        protected FilterResults performFiltering(CharSequence constraint)  {
+        protected FilterResults performFiltering(CharSequence constraint) {
             t1 = System.currentTimeMillis();
             String filterString = constraint.toString(), originalFilterString = filterString;
             st = filterString;
@@ -231,11 +243,19 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
             final List<Contact> list;
             final List<Contact> nList;
 
+<<<<<<< HEAD
             if(constraint == null || constraint.length() == 0) {
                 nList = contactsOrginal;
                 Spannable spannable = Spannable.Factory.getInstance().newSpannable(Constant.EMPTY_STRING);
                 for (Contact contactModel : nList) {
                     contactModel.setSubTextSpanned(spannable);
+=======
+            if (constraint == null || constraint.length() == 0) {
+                for (int i = 0; i < count; i++) {
+                    contactModel = list.get(i);
+                    contactModel.setSubText(Constant.EMPTY_STRING);
+                    nlist.add(contactModel);
+>>>>>>> 9eaf4d4aaff5828159f32876d543acfb68bca801
                 }
             } else {
                 list = originalFilterString.length() > oldString.length() ? contactsToView : contactsOrginal;
@@ -250,16 +270,21 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
                 for (int i = 0; i < count; i++) {
                     contactModel = list.get(i);
                     isMatched = false;
-                    for(int index : searchIndexes) {
+                    for (int index : searchIndexes) {
                         searchList = contactModel.getDataIndicesByDataIndex(index);
 //                        searchList = contactModel.getDataList(index);
-                        for(String value : searchList) {
+                        for (String value : searchList) {
                             indexOfSubString = value.indexOf(filterString);
-                            if(indexOfSubString != -1) {
+                            if (indexOfSubString != -1) {
                                 isMatched = true;
 
+<<<<<<< HEAD
                                 if(index != Constant.DISPLAY_NAME) {//If display name then manipulate display name particularly
                                     /*subString = value.substring(0, indexOfSubString);
+=======
+                                if (index != Constant.DISPLAY_NAME) {//If display name then manipulate display name particularly
+                                    subString = value.substring(0, indexOfSubString);
+>>>>>>> 9eaf4d4aaff5828159f32876d543acfb68bca801
                                     subString += "<b>" + originalFilterString + "</b>";
                                     subString += value.substring(indexOfSubString + originalFilterString.length(), value.length());
                                     contactModel.setSubTextSpanned(Html.fromHtml(subString));*/
@@ -277,7 +302,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
                                 break;
                             }
                         }
-                        if(isMatched)
+                        if (isMatched)
                             break;
                     }
                 }
@@ -293,9 +318,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            contactsToView = (ArrayList<Contact>)results.values;
+            contactsToView = (ArrayList<Contact>) results.values;
             notifyDataSetChanged();
-            System.out.println("[Azim-time-check]::"+st + "::" + (System.currentTimeMillis() - t1));
+            System.out.println("[Azim-time-check]::" + st + "::" + (System.currentTimeMillis() - t1));
         }
 
     }

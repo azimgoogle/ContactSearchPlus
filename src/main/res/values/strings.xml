@@ -38,6 +38,6 @@
 
     <!-- AdMob -->
     <string name="test_banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="home_page_banner_ad_unit_id">ca-app-pub-9664359908202679/2179765749</string>
+    <!--<string name="home_page_banner_ad_unit_id">ca-app-pub-9664359908202679/2179765749</string>-->
 
 </resources>

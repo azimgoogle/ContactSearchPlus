@@ -13,9 +13,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/recycler_ripple"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/recycler_ripple"
         android:orientation="horizontal"
         android:padding="10dp">
 

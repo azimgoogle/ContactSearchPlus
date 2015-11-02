@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!-- main color for drawable-v21/my_ripple -->
+    <color name="my_color_highlight">#FFE99E63</color>
+    <!-- main color for drawable/my_ripple -->
+    <color name="my_color_highlight_press">#77E99E63</color>
+    <color name="my_color_highlight_focus">#CCE99E63</color>
 </resources>

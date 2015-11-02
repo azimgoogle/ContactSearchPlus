@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         getRecyclerView().addItemDecoration(new RecyclerViewDividerItemDecorator(this, null));
         mAdapter = new ContactAdapter(R.layout.contact, Constant.contactModelList);
         getRecyclerView().setAdapter(mAdapter);
+        syncAdapter();
         getRecyclerView().addOnItemTouchListener(new RecyclerItemClickListener(this, getRecyclerView(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -98,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         }));
 
-        syncAdapter();
 
         boolean bootSynced = PrefManager.on(this.getBaseContext()).isBootSynced();
         boolean synced = PrefManager.on(this.getBaseContext()).isSynced();
@@ -107,15 +107,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         } else if (!synced) {
             new SyncTask(this.getBaseContext()).execute(PrefManager.on(this.getBaseContext()).getConfig());
         }
-        int[] attrs = new int[]{R.attr.selectableItemBackground};
-        TypedArray typedArray = obtainStyledAttributes(attrs);
-        int backgroundResource = typedArray.getResourceId(0, 0);
-        getRecyclerView().setBackgroundResource(backgroundResource);
 
         final AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-
 
         AnalyticsTrackers.initialize(getApplicationContext());
         tracker = AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
@@ -128,16 +123,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
-/*    @Override
-    public void onBackPressed() {
-       *//* if (logic.getDrawerLayout().isDrawerOpen(GravityCompat.START)) {
-            logic.getDrawerLayout().closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }*//*
-
-    }*/
-
     private void showContextMenu(final long contactID, View view) {
         //Creating the instance of PopupMenu
         PopupMenu popup = new PopupMenu(MainActivity.this, view);
@@ -148,8 +133,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
 //                Toast.makeText(MainActivity.this, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
-                switch(item.getItemId()) {
-                    case R.id.call :
+                switch (item.getItemId()) {
+                    case R.id.call:
                         makeCall(contactID);
                         break;
                     case R.id.message:
@@ -362,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public void contactLoadingFinished() {
-        if(mSearchView != null) {
+        if (mSearchView != null) {
             String filterString = mSearchView.getQuery().toString();
             onQueryTextChange(filterString);
         }

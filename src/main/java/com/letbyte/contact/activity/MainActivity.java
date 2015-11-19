@@ -263,7 +263,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return (ProgressBar) findViewById(R.id.progressBar);
     }
 
-    //Give priority to frequent contacts by providing options at settings MUST TODO
     private void syncAdapter() {
         ProgressBar progressBar = getProgressBar();
         progressBar.setVisibility(View.VISIBLE);
@@ -271,10 +270,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
         boolean isToFilterPhoneNumber = PrefManager.on(this).isFilteredByNumber();
+        boolean isPrioritizeStrequent = PrefManager.on(this).isStrequentPriority();
+
 
         ContactClient.getInstance().setContactLoadingFinishedListener(this);
         ContactClient.getInstance().addCommand(new ContactLoaderCommand(this, progressBar, mAdapter,
-                Constant.contactModelList, isToFilterPhoneNumber));
+                Constant.contactModelList, isToFilterPhoneNumber, isPrioritizeStrequent));
 
         boolean isToload = PrefManager.on(this).isNumber();
         if (isToload)

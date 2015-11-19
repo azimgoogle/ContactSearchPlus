@@ -27,14 +27,15 @@ public class ContactLoaderCommand implements Command {
     private ProgressBar mProgressBar;
     private RecyclerView.Adapter mAdapter;
     private List<Contact> mContactModelList;
-    private boolean mIsToFilterHasPhoneNumber;
+    private boolean mIsToFilterHasPhoneNumber, mIsToPrioritizeStrequent;
     private Context mContext;
 
     public ContactLoaderCommand(Context context, ProgressBar progressBar, RecyclerView.Adapter adapter,
-                                List<Contact> contactModelList, boolean isToFilterHasPhoneNumber) {
+                                List<Contact> contactModelList, boolean isToFilterHasPhoneNumber, boolean isToPrioritizeStrequent) {
         mProgressBar = progressBar;
         mAdapter = adapter;
         this.mContactModelList = contactModelList;
+        this.mIsToPrioritizeStrequent = isToPrioritizeStrequent;
         contactClient = context.getContentResolver().acquireContentProviderClient(Contacts.CONTENT_URI);
         this.mIsToFilterHasPhoneNumber = isToFilterHasPhoneNumber;
         mContext = context;
@@ -53,6 +54,9 @@ public class ContactLoaderCommand implements Command {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                     mContext.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
                     return null;
+//            if(mIsToPrioritizeStrequent)//Maintain HashMap<ContactID, Contact(contact model)> So that after adding strequent's
+            //not same normal contact would add in the list.
+            //Moreover rather customarraylist Hashmap can be a faster choice - Need investigation
             if (contactClient != null) {
                 Cursor contactCursor = null;
                 try {

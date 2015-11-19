@@ -134,6 +134,12 @@ public class PrefManager {
         return pref.getBoolean(context.getString(R.string.notes), true);
     }
 
+    public boolean isStrequentPriority() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        if (pref == null) return true;
+        return pref.getBoolean(context.getString(R.string.strequent_priority), true);
+    }
+
     private void setNote(boolean note) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = pref.edit();

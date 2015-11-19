@@ -3,7 +3,6 @@ package com.letbyte.contact.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.TypedArray;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
@@ -30,6 +29,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
+import com.letbyte.contact.application.Application;
 import com.letbyte.contact.control.Constant;
 import com.letbyte.contact.control.PrefManager;
 import com.letbyte.contact.data.model.Contact;
@@ -46,7 +46,6 @@ import com.letbyte.contact.loader.OrganizationLoaderCommand;
 import com.letbyte.contact.loader.PhoneNumberLoaderCommand;
 import com.letbyte.contact.loader.RelationLoaderCommand;
 import com.letbyte.contact.task.SyncTask;
-import com.letbyte.contact.tracker.AnalyticsTrackers;
 import com.letbyte.contact.utility.ContactUtility;
 
 import java.util.ArrayList;
@@ -72,6 +71,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Application application = (Application) getApplication();
+        tracker = application.getDefaultTracker();
+
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         setSupportActionBar(binding.toolbar);
@@ -112,14 +116,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        AnalyticsTrackers.initialize(getApplicationContext());
-        tracker = AnalyticsTrackers.getInstance().get(AnalyticsTrackers.Target.APP);
-        tracker.setScreenName(getClass().getSimpleName());
     }
 
 
+    @Override
     protected void onResume() {
         super.onResume();
+
+        tracker.setScreenName(getClass().getName());
         tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 

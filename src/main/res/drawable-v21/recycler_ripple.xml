@@ -4,5 +4,5 @@
 
     <item
         android:id="@android:id/mask"
-        android:drawable="@color/common_action_bar_splitter" />
+        android:drawable="@color/my_color_highlight" />
 </ripple>

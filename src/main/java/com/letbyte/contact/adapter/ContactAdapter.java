@@ -206,7 +206,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
         return cID;
     }
 
-    static long t1 = 0;
     //Make a filter command to cancel previous tasks where user write query text too early
     // before finishing existing filter task
     private class ModelFilter extends Filter
@@ -224,11 +223,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            t1 = System.currentTimeMillis();
             String filterString = constraint.toString(), originalFilterString = filterString;
             st = filterString;
-            //Rather pattern matching, manual checking could be more faster
-//            boolean isAllDigit = pattern.matcher(filterString).matches();
             FilterResults results = new FilterResults();
             final List<Contact> list;
             final List<Contact> nList;
@@ -254,16 +250,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
                     isMatched = false;
                     for (int index : searchIndexes) {
                         searchList = contactModel.getDataIndicesByDataIndex(index);
-//                        searchList = contactModel.getDataList(index);
                         for (String value : searchList) {
                             indexOfSubString = value.indexOf(filterString);
                             if (indexOfSubString != -1) {
                                 isMatched = true;
                                 if(index != Constant.DISPLAY_NAME) {//If display name then manipulate display name particularly
-                                    /*subString = value.substring(0, indexOfSubString);
-                                    subString += "<b>" + originalFilterString + "</b>";
-                                    subString += value.substring(indexOfSubString + originalFilterString.length(), value.length());
-                                    contactModel.setSubTextSpanned(Html.fromHtml(subString));*/
 
                                     subString = value.substring(0, indexOfSubString);
                                     subString +=  originalFilterString ;
@@ -271,7 +262,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
                                     SpannableString spannableString = new SpannableString(subString);
                                     spannableString.setSpan(new StyleSpan(Typeface.BOLD), indexOfSubString,
                                             indexOfSubString + originalFilterString.length(), 0);
-                                    //Faster than HtmlFormat
                                     contactModel.setSubTextSpanned(spannableString);
                                 }
                                 nList.add(contactModel);
@@ -296,8 +286,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.BindingH
         protected void publishResults(CharSequence constraint, FilterResults results) {
             contactsToView = (ArrayList<Contact>) results.values;
             notifyDataSetChanged();
-            System.out.println("[Azim-time-check]::" + st + "::" + (System.currentTimeMillis() - t1));
         }
-
     }
 }

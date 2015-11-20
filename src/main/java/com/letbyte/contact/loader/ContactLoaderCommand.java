@@ -65,7 +65,7 @@ public class ContactLoaderCommand implements Command {
                     String[] arguments = mIsToFilterHasPhoneNumber ? new String[]{"1"} : null;
                     contactCursor = contactClient.query(Contacts.CONTENT_URI, new String[]{Contacts.DISPLAY_NAME_PRIMARY, Contacts.DISPLAY_NAME,
                                     Contacts.DISPLAY_NAME_ALTERNATIVE, Contacts._ID, Contacts.PHOTO_THUMBNAIL_URI},
-                            filterString, arguments,
+                            filterString, arguments, Contacts.STARRED + " DESC, " +
                             Contacts.DISPLAY_NAME + " COLLATE NOCASE ASC");
                     if (contactCursor != null && contactCursor.moveToFirst()) {
                         final int displayNamePrimaryIndex = contactCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY);

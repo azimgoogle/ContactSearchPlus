@@ -16,6 +16,9 @@
     <string name="notes">Notes</string>
     <string name="notes_summary">Search in contact notes</string>
 
+    <string name="priority_search">Priority search</string>
+    <string name="priority_search_summary">Shows favorite or frequently contacted contacts first</string>
+
     <string name="search_in_phone_numbers">Search in phone number contacts</string>
     <string name="search_in_phone_numbers_summary">Search restricts only which contacts has phone number. Improves performance.</string>
 
@@ -35,9 +38,6 @@
     <string name="menu_call">Call</string>
     <string name="menu_message">Message</string>
     <string name="menu_show_details">Show Details</string>
-
-    <string name="strequent_priority">Priority to frequent contacts</string>
-    <string name="strequent_priority_summary">If selected then frequently contacted contacts and favorite contacts appears first</string>
 
     <!-- AdMob -->
     <string name="banner_ad_unit_id">ca-app-pub-9664359908202679/2179765749</string>

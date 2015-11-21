@@ -18,6 +18,13 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
+            android:key="@string/priority_search"
+            android:title="@string/priority_search"
+            android:summary="@string/priority_search_summary" >
+        </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
             android:key="@string/search_in_phone_numbers"
             android:title="@string/search_in_phone_numbers"
             android:summary="@string/search_in_phone_numbers_summary" >

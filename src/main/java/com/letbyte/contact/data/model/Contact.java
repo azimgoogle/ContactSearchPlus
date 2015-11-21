@@ -18,6 +18,7 @@ import java.util.List;
 
 public class Contact extends BaseObservable implements Parcelable {
 
+    private boolean mIsStrequent;
     private long id;
     private String namePrimary;
     private String subText;
@@ -33,6 +34,11 @@ public class Contact extends BaseObservable implements Parcelable {
     private List<List<String>> dataIndices;
 
     private Contact() {
+    }
+
+    public Contact(long id, String namePrimary, String imageUri, List<String> names, boolean isStrequent) {
+        this(id, namePrimary, imageUri, names);
+        mIsStrequent = isStrequent;
     }
 
     public Contact(long id, String namePrimary, String imageUri, List<String> names) {
@@ -80,6 +86,14 @@ public class Contact extends BaseObservable implements Parcelable {
 
     public String getImageUri() {
         return imageUri;
+    }
+
+    /**
+     * Is contact Starred or Favorite
+     * @return
+     */
+    public boolean getIsStrequentContact() {
+        return mIsStrequent;
     }
 
     public List<String> getNames() {

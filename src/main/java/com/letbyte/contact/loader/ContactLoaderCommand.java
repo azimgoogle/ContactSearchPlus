@@ -53,6 +53,7 @@ public class ContactLoaderCommand implements Command {
 
         @Override
           protected ArrayList<Contact> doInBackground(Void... params) {
+            long t1 = System.currentTimeMillis();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                     mContext.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED)
                     return null;
@@ -79,7 +80,7 @@ public class ContactLoaderCommand implements Command {
                                 final int photoThumbNailIndex = strequentCursor.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI);
                                 ArrayList<String> displayNameList;
                                 //TODO transfer disName related task in separate method
-                                //Check either binary search or hashmap
+                                //Check either binary search(724.4ms) or hashmap avg (740.2ms)
                                 do {
                                     cID = strequentCursor.getLong(contactIDIndex);
                                     streuqentList.add(cID);
@@ -106,7 +107,7 @@ public class ContactLoaderCommand implements Command {
                                             displayNameList.add(displayNameAlternative);
                                     }
                                     Constant.cIDArrayListIndexMap.put(cID, index++);
-                                    contactModelList.add(new Contact(cID, displayNamePrimaryOrig, imageUrl, displayNameList));
+                                    contactModelList.add(new Contact(cID, displayNamePrimaryOrig, imageUrl, displayNameList, true));
                                 } while(strequentCursor.moveToNext());
                                 Collections.sort(streuqentList);
                             }
@@ -159,7 +160,7 @@ public class ContactLoaderCommand implements Command {
                                 System.out.println("[Azim-contact]::" + displayNamePrimary);
                             } //HashMap might automatically reject new entry check which is best
                         }
-                        System.out.println("To debug");
+                        System.out.println("[Azim-time]::"+(System.currentTimeMillis() - t1) + " ms");
                         return contactModelList;
                     }
                 } catch (RemoteException e) {

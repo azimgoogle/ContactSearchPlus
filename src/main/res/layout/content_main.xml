@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:theme="@style/Theme.AppCompat"
     tools:context=".MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/app_bar_main">
 
     <LinearLayout
         android:id="@+id/adViewLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/darker_gray">
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
@@ -23,27 +21,25 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:visibility="gone"
-            ads:adUnitId="@string/test_banner_ad_unit_id"
-            app:adSize="SMART_BANNER" />
+            app:adSize="SMART_BANNER"
+            app:adUnitId="@string/test_banner_ad_unit_id" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/recyclerViewLinearLayout"
+    <FrameLayout
+        android:id="@+id/contentFrame"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/adViewLayout"
+        android:background="@android:color/darker_gray" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/adViewLayout"
-        android:orientation="vertical">
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_24dp"
+        app:layout_behavior="com.letbyte.feed.behavior.ScrollAwareFabBehavior" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="vertical" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
 </RelativeLayout>

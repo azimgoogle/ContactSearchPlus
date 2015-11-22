@@ -1,45 +1,21 @@
 <resources>
-    <string name="app_name">Contact Search</string>
-    <!--<string name="app_name">Contact Search Plus</string>-->
+    <string name="app_name">Call Blocker</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="action_settings">Settings</string>
 
-    <!-- Preference Settings -->
-    <string name="phone_number">Phone Number</string>
-    <string name="phone_number_summary">Search in phone numbers</string>
+    <string name="action_block">All Block Contacts</string>
 
-    <string name="email">EMail</string>
-    <string name="email_summary">Search in e-mail addresses</string>
+    <string name="title_activity_add">AddActivity</string>
+    <string name="title_activity_add_block">AddBlockActivity</string>
 
-    <string name="address">Address</string>
-    <string name="address_summary">Search in contact postal addresses</string>
+    <string name="new_call_blocked_notification_title">Call Blocked</string>
+    <string name="new_call_blocked_notification_text">Call from %s is Blocked</string>
 
-    <string name="notes">Notes</string>
-    <string name="notes_summary">Search in contact notes</string>
-
-    <string name="priority_search">Priority search</string>
-    <string name="priority_search_summary">Shows favorite or frequently contacted contacts first</string>
-
-    <string name="search_in_phone_numbers">Search in phone number contacts</string>
-    <string name="search_in_phone_numbers_summary">Search restricts only which contacts has phone number. Improves performance.</string>
-
-    <string name="organization">Organizations</string>
-    <string name="organization_summary">Search in contact organizations</string>
-
-    <string name="relation">Relations</string>
-    <string name="relation_summary">Search for contact relations</string>
-
-    <string name="single_tap_action">Single tap action</string>
-    <string name="single_tap_action_summary">If selected, enable calling on single tap. Otherwise, show details of contact</string>
-
-    <string name="sort_order">Contact Sorting Order</string>
-    <string name="sort_order_summary">Select freuently contacted contacts should get priority or not</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-
-    <string name="menu_call">Call</string>
-    <string name="menu_message">Message</string>
-    <string name="menu_show_details">Show Details</string>
 
     <!-- AdMob -->
-    <string name="banner_ad_unit_id">ca-app-pub-9664359908202679/2179765749</string>
+    <string name="banner_ad_unit_id">ca-app-pub-9664359908202679/4135249744</string>
 
 </resources>

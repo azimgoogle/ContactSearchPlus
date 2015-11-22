@@ -67,7 +67,7 @@
                         android:text="@{contact.namePrimary}"
                         android:textColor="#123456"
                         android:textSize="20sp"
-                        app:fontName="RobotoSlab-Regular.ttf" />
+                        app:fontName="RobotoSlab-Bold.ttf" />
 
                     <com.letbyte.contact.widget.FontTextView
                         android:id="@+id/subText"

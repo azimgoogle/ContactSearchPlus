@@ -7,7 +7,7 @@
             	android:summary="pref_user_name_summary" 
             	android:key="prefUsername"/>
     </PreferenceCategory> -->
-    
+
     <PreferenceCategory android:title="@string/action_settings" >
         <CheckBoxPreference
             android:defaultValue="true"
@@ -43,42 +43,42 @@
             android:title="@string/phone_number"
             android:summary="@string/phone_number_summary" >
         </CheckBoxPreference>
-        
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/email"
             android:title="@string/email"
             android:summary="@string/email_summary" >
         </CheckBoxPreference>
-        
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/address"
             android:title="@string/address"
             android:summary="@string/address_summary" >
         </CheckBoxPreference>
-        
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/organization"
             android:title="@string/organization"
             android:summary="@string/organization_summary" >
         </CheckBoxPreference>
-        
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/relation"
             android:title="@string/relation"
             android:summary="@string/relation_summary" >
         </CheckBoxPreference>
-        
+
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/notes"
             android:title="@string/notes"
             android:summary="@string/notes_summary" >
         </CheckBoxPreference>
-        
+
         <!-- <ListPreference
             android:key="@string/strequent"
             android:entries="@array/sortOrderNames" 

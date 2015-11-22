@@ -13,12 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by letbyte on 8/2/2015.
+ * Created by nuc on 8/2/2015.
  */
 
 public class Contact extends BaseObservable implements Parcelable {
 
-    private boolean mIsStrequent;
     private long id;
     private String namePrimary;
     private String subText;
@@ -32,13 +31,14 @@ public class Contact extends BaseObservable implements Parcelable {
     private List<String> companies;
     private List<String> relationShips;
     private List<List<String>> dataIndices;
+    private boolean frequent;
 
     private Contact() {
     }
 
-    public Contact(long id, String namePrimary, String imageUri, List<String> names, boolean isStrequent) {
+    public Contact(long id, String namePrimary, String imageUri, List<String> names, boolean frequent) {
         this(id, namePrimary, imageUri, names);
-        mIsStrequent = isStrequent;
+        this.frequent = frequent;
     }
 
     public Contact(long id, String namePrimary, String imageUri, List<String> names) {
@@ -88,12 +88,9 @@ public class Contact extends BaseObservable implements Parcelable {
         return imageUri;
     }
 
-    /**
-     * Is contact Starred or Favorite
-     * @return
-     */
-    public boolean getIsStrequentContact() {
-        return mIsStrequent;
+    @Bindable
+    public boolean getFrequent() {
+        return frequent;
     }
 
     public List<String> getNames() {

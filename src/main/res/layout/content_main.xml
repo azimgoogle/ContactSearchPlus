@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:theme="@style/Theme.AppCompat"
+    app:theme="@style/Theme.AppCompat" android:background="@android:color/darker_gray"
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
@@ -23,7 +23,7 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             app:adSize="SMART_BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id" />
+            ads:adUnitId="@string/test_banner_ad_unit_id" />
     </LinearLayout>
 
     <LinearLayout

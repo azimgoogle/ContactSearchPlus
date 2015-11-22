@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         getRecyclerView().setHasFixedSize(true);
         getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
-        getRecyclerView().addItemDecoration(new RecyclerViewDividerItemDecorator(this, null));
+        //getRecyclerView().addItemDecoration(new RecyclerViewDividerItemDecorator(this, null));
         mAdapter = new ContactAdapter(R.layout.contact, Constant.contactModelList);
         getRecyclerView().setAdapter(mAdapter);
         syncAdapter();

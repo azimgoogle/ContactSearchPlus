@@ -5,8 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:theme="@style/Theme.AppCompat" android:background="@android:color/darker_gray"
+    app:theme="@style/Theme.AppCompat"
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
@@ -22,8 +23,9 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            app:adSize="SMART_BANNER"
-            ads:adUnitId="@string/test_banner_ad_unit_id" />
+            android:visibility="gone"
+            ads:adUnitId="@string/test_banner_ad_unit_id"
+            app:adSize="SMART_BANNER" />
     </LinearLayout>
 
     <LinearLayout

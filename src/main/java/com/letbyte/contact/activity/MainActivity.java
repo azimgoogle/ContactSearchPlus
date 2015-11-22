@@ -32,6 +32,7 @@ import com.letbyte.contact.adapter.ContactAdapter;
 import com.letbyte.contact.application.Application;
 import com.letbyte.contact.control.Constant;
 import com.letbyte.contact.control.PrefManager;
+import com.letbyte.contact.control.Util;
 import com.letbyte.contact.data.model.Contact;
 import com.letbyte.contact.databinding.ActivityMainBinding;
 import com.letbyte.contact.drawable.RecyclerViewDividerItemDecorator;
@@ -112,19 +113,43 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             new SyncTask(this.getBaseContext()).execute(PrefManager.on(this.getBaseContext()).getConfig());
         }
 
-        final AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
     }
 
+    private AdView getAdView() {
+        return (AdView) findViewById(R.id.adView);
+    }
+
+    private void resolveAdView() {
+        new Thread(new Runnable() {
+            boolean isOnline;
+
+            @Override
+            public void run() {
+
+                isOnline = Util.isOnline();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getAdView().setVisibility(Util.isOnline() ? View.VISIBLE : View.GONE);
+
+                        if (getAdView().getVisibility() == View.VISIBLE) {
+                            getAdView().loadAd(new AdRequest.Builder().build());
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        tracker.setScreenName(getClass().getName());
-        tracker.send(new HitBuilders.ScreenViewBuilder().build());
+        Application application = (Application) getApplication();
+        application.trackMe(getClass().getName());
+
+        resolveAdView();
     }
 
     private void showContextMenu(final long contactID, View view) {

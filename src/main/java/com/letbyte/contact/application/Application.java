@@ -1,6 +1,7 @@
 package com.letbyte.contact.application;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.letbyte.contact.R;
 
@@ -23,5 +24,10 @@ public class Application extends android.app.Application {
             tracker = analytics.newTracker(R.xml.global_tracker);
         }
         return tracker;
+    }
+
+    synchronized public void trackMe(String screenName) {
+        getDefaultTracker().setScreenName(screenName);
+        getDefaultTracker().send(new HitBuilders.ScreenViewBuilder().build());
     }
 }

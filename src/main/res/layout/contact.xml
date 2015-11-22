@@ -26,7 +26,7 @@
             android:layout_gravity="center"
             android:clickable="true"
             android:foreground="@drawable/recycler_ripple"
-            android:minHeight="?android:attr/listPreferredItemHeight"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
             app:cardCornerRadius="1dp"
             app:cardElevation="5dp">
 
@@ -41,8 +41,8 @@
 
                 <ImageView
                     android:id="@+id/imgIcon"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="15dp"
@@ -66,7 +66,7 @@
                         android:text="@{contact.namePrimary}"
                         android:textColor="#000000"
                         android:textSize="22sp"
-                        app:fontName="RobotoSlab-Bold.ttf" />
+                        app:fontName="RobotoSlab-Regular.ttf" />
 
                     <com.letbyte.contact.widget.FontTextView
                         android:id="@+id/subText"

@@ -89,11 +89,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, getRecyclerView(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                final long contactID = mAdapter.getContactIDbyPosition(position);
-                if (isToCallOnSingleTap)
-                    makeCall(contactID);
-                else
-                    showContactDetailsView(contactID);
+                if(ContactAdapter.IS_SCROLLING_IDLE) {
+                    final long contactID = mAdapter.getContactIDbyPosition(position);
+                    if (isToCallOnSingleTap)
+                        makeCall(contactID);
+                    else
+                        showContactDetailsView(contactID);
+                }
             }
 
             @Override

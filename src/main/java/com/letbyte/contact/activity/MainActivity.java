@@ -25,7 +25,6 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
@@ -35,7 +34,6 @@ import com.letbyte.contact.control.PrefManager;
 import com.letbyte.contact.control.Util;
 import com.letbyte.contact.data.model.Contact;
 import com.letbyte.contact.databinding.ActivityMainBinding;
-import com.letbyte.contact.drawable.RecyclerViewDividerItemDecorator;
 import com.letbyte.contact.listener.ContactLoadingFinishedListener;
 import com.letbyte.contact.listener.RecyclerItemClickListener;
 import com.letbyte.contact.loader.AddressLoaderCommand;
@@ -80,14 +78,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         setSupportActionBar(binding.toolbar);
+        RecyclerView recyclerView = getRecyclerView();
 
-        getRecyclerView().setHasFixedSize(true);
-        getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //getRecyclerView().addItemDecoration(new RecyclerViewDividerItemDecorator(this, null));
         mAdapter = new ContactAdapter(R.layout.contact, Constant.contactModelList);
-        getRecyclerView().setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
         syncAdapter();
-        getRecyclerView().addOnItemTouchListener(new RecyclerItemClickListener(this, getRecyclerView(), new RecyclerItemClickListener.OnItemClickListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, getRecyclerView(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 final long contactID = mAdapter.getContactIDbyPosition(position);
@@ -103,6 +102,29 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 showContextMenu(contactID, view);
             }
         }));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                switch (newState) {
+                    case RecyclerView.SCROLL_STATE_IDLE:
+                        ContactAdapter.IS_SCROLLING_IDLE = true;
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                    case RecyclerView.SCROLL_STATE_DRAGGING:
+                        ContactAdapter.IS_SCROLLING_IDLE = false;
+                        break;
+                    case RecyclerView.SCROLL_STATE_SETTLING:
+                        ContactAdapter.IS_SCROLLING_IDLE = false;
+                        break;
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
 
 
         boolean bootSynced = PrefManager.on(this.getBaseContext()).isBootSynced();
@@ -110,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if (!bootSynced) {
             new SyncTask(this.getBaseContext()).execute(new HashMap<String, Boolean>());
         } else if (!synced) {
-            new SyncTask(this.getBaseContext()).execute(PrefManager.on(this.getBaseContext()).getConfig());
+            new SyncTask(this.getBaseContext()).execute(PrefManager.on(getBaseContext()).getConfig());
         }
 
     }
@@ -131,11 +153,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        getAdView().setVisibility(Util.isOnline() ? View.VISIBLE : View.GONE);
 
-                        if (getAdView().getVisibility() == View.VISIBLE) {
+                        if (isOnline) {
                             getAdView().loadAd(new AdRequest.Builder().build());
                         }
+
+                        getAdView().setVisibility(isOnline ? View.VISIBLE : View.GONE);
                     }
                 });
             }

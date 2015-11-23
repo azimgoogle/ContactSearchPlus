@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
+    android:background="@android:color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     app:theme="@style/Theme.AppCompat"
     tools:context=".MainActivity"
@@ -28,7 +28,7 @@
             app:adSize="SMART_BANNER" />
     </LinearLayout>
 
-    <LinearLayout
+    <LinearLayout  android:background="@android:color/darker_gray"
         android:id="@+id/recyclerViewLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

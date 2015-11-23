@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, getRecyclerView(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if(ContactAdapter.IS_SCROLLING_IDLE) {
+                if (ContactAdapter.IS_SCROLLING_IDLE) {
                     final long contactID = mAdapter.getContactIDbyPosition(position);
                     if (isToCallOnSingleTap)
                         makeCall(contactID);
@@ -155,11 +155,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                         if (isOnline) {
                             getAdView().loadAd(new AdRequest.Builder().build());
                         }
+                    }
+                });
 
+                if (isOnline)
+                    Util.sleep(3);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
                         getAdView().setVisibility(isOnline ? View.VISIBLE : View.GONE);
                     }
                 });

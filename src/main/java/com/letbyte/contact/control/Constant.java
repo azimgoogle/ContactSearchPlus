@@ -12,6 +12,11 @@ import java.util.Map;
  */
 public interface Constant {
 
+    int MILLI = 1000;
+    int SECOND = 1 * MILLI;
+    int MINUTE = 60 * SECOND;
+    int HOUR = 60 * MINUTE;
+
     String EMPTY_STRING = "";
     String COMMA_STRING = ",";
     int DISPLAY_NAME = 0;

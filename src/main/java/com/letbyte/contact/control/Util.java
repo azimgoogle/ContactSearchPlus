@@ -188,7 +188,13 @@ public class Util {
         return false;
     }
 
+    public static void sleep(int seconds) {
+        try {
+            Thread.sleep(seconds * Constant.MILLI);
+        } catch (InterruptedException e) {
 
+        }
+    }
 
 }
 

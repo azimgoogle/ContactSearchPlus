@@ -7,6 +7,7 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -248,11 +249,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
-        searchMenuItem.expandActionView();
+        final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         mSearchView = searchView;
         searchView.setOnQueryTextListener(this);
+
+        mSearchView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                searchMenuItem.expandActionView();
+            }
+        }, 800);
+
         return true;
     }
 

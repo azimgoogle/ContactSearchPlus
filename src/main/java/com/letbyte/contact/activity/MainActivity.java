@@ -35,6 +35,7 @@ import com.letbyte.contact.control.PrefManager;
 import com.letbyte.contact.control.Util;
 import com.letbyte.contact.data.model.Contact;
 import com.letbyte.contact.databinding.ActivityMainBinding;
+import com.letbyte.contact.drawable.RecyclerViewDividerItemDecorator;
 import com.letbyte.contact.listener.ContactLoadingFinishedListener;
 import com.letbyte.contact.listener.RecyclerItemClickListener;
 import com.letbyte.contact.loader.AddressLoaderCommand;
@@ -65,16 +66,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             Constant.RELATION};//Change final and search indexes during Adapter syncing,to reduce search domain
     private boolean isToCallOnSingleTap;
     private SearchView mSearchView;
-    private Tracker tracker;
     private ContactAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Application application = (Application) getApplication();
-        tracker = application.getDefaultTracker();
-
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
@@ -83,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //getRecyclerView().addItemDecoration(new RecyclerViewDividerItemDecorator(this, null));
+        getRecyclerView().addItemDecoration(new RecyclerViewDividerItemDecorator(this, null));
         mAdapter = new ContactAdapter(R.layout.contact, Constant.contactModelList);
         recyclerView.setAdapter(mAdapter);
         syncAdapter();
@@ -179,9 +175,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onResume() {
         super.onResume();
 
-        Application application = (Application) getApplication();
-        application.trackMe(getClass().getName());
-
+        ((Application) getApplication()).trackMe(getClass().getName());
+        
         resolveAdView();
     }
 

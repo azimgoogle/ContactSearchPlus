@@ -27,8 +27,7 @@
             android:clickable="true"
             android:foreground="@drawable/recycler_ripple"
             android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            app:cardCornerRadius="1dp"
-            app:cardElevation="5dp">
+            app:cardCornerRadius="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -4,9 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="contact_item_padding_top">1px</dimen>
-    <dimen name="contact_item_padding_bottom">1px</dimen>
+    <dimen name="contact_item_padding_top">1dp</dimen>
+    <dimen name="contact_item_padding_bottom">1dp</dimen>
 
-    <dimen name="contact_item_padding_left">2px</dimen>
-    <dimen name="contact_item_padding_right">2px</dimen>
+    <dimen name="contact_item_padding_left">2dp</dimen>
+    <dimen name="contact_item_padding_right">2dp</dimen>
 </resources>

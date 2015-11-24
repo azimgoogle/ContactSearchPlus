@@ -132,9 +132,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         boolean bootSynced = PrefManager.on(this.getBaseContext()).isBootSynced();
         boolean synced = PrefManager.on(this.getBaseContext()).isSynced();
         if (!bootSynced) {
-            new SyncTask(this.getBaseContext()).execute(new HashMap<String, Boolean>());
+            //new SyncTask(this.getBaseContext()).execute(new HashMap<String, Boolean>());
         } else if (!synced) {
-            new SyncTask(this.getBaseContext()).execute(PrefManager.on(getBaseContext()).getConfig());
+            //new SyncTask(this.getBaseContext()).execute(PrefManager.on(getBaseContext()).getConfig());
         }
 
     }
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 });
 
                 if (isOnline)
-                    Util.sleep(3);
+                    Util.sleep(2);
 
                 runOnUiThread(new Runnable() {
                     @Override

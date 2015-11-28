@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.Tracker;
+import com.kobakei.ratethisapp.RateThisApp;
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
 import com.letbyte.contact.application.Application;
@@ -136,6 +137,35 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Monitor launch times and interval from installation
+        RateThisApp.onStart(this);
+        // If the criteria is satisfied, "Rate this app" dialog will be shown
+        RateThisApp.showRateDialogIfNeeded(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ((Application) getApplication()).trackMe(getClass().getName());
+
+        resolveAdView();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        destroyAdView();
+    }
+
+    private void destroyAdView() {
+        getAdView().destroy();
+    }
+
     private AdView getAdView() {
         return (AdView) findViewById(R.id.adView);
     }
@@ -171,14 +201,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }).start();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-        ((Application) getApplication()).trackMe(getClass().getName());
-        
-        resolveAdView();
-    }
 
     private void showContextMenu(final long contactID, View view) {
         //Creating the instance of PopupMenu

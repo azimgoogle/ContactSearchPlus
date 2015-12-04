@@ -3,12 +3,14 @@ package com.letbyte.contact.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -21,6 +23,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
@@ -33,6 +36,7 @@ import com.letbyte.contact.control.Constant;
 import com.letbyte.contact.control.PrefManager;
 import com.letbyte.contact.control.Util;
 import com.letbyte.contact.data.model.Contact;
+import com.letbyte.contact.data.provider.DataProvider;
 import com.letbyte.contact.databinding.ActivityMainBinding;
 import com.letbyte.contact.listener.ContactLoadingFinishedListener;
 import com.letbyte.contact.listener.RecyclerItemClickListener;
@@ -66,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private SearchView mSearchView;
     private Tracker tracker;
     private ContactAdapter mAdapter;
+    private SimpleCursorAdapter mCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         makeCall(contactID);
                     else
                         showContactDetailsView(contactID);
+                    triggerSearchSuggestionHint();
                 }
             }
 
@@ -102,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onItemLongClick(View view, int position) {
                 final long contactID = mAdapter.getContactIDbyPosition(position);
                 showContextMenu(contactID, view);
+                triggerSearchSuggestionHint();
             }
         }));
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -137,6 +144,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             new SyncTask(this.getBaseContext()).execute(PrefManager.on(getBaseContext()).getConfig());
         }
 
+        final int[] to = new int[] {android.R.id.text1};
+        mCursorAdapter = new SimpleCursorAdapter(this,
+                R.layout.query_suggestion,
+                null,
+                new String[]{DataProvider.Entry._ID, DataProvider.Entry.KEYWORD},
+                to,
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
     }
 
     private AdView getAdView() {
@@ -245,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return true;
     }
 
+    //create vs prepare
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -253,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         mSearchView = searchView;
         searchView.setOnQueryTextListener(this);
+        searchView.setSuggestionsAdapter(mCursorAdapter);
         return true;
     }
 
@@ -412,6 +428,35 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if (mSearchView != null) {
             String filterString = mSearchView.getQuery().toString();
             onQueryTextChange(filterString);
+            populateSuggestionData();
         }
+    }
+
+    private synchronized void triggerSearchSuggestionHint() {
+        if(mSearchView != null) {
+            CharSequence searchString  = mSearchView.getQuery();
+            if(searchString.length() > 0) {
+                DataProvider.onProvider(getApplicationContext()).updateOrInsertSearchHints(searchString);
+            }
+        }
+    }
+
+    private boolean populateSuggestionData() {
+        Cursor cursor = DataProvider.onProvider(getApplicationContext()).getSuggesationHint();
+        if(cursor == null)
+            return false;
+        mCursorAdapter.changeCursor(cursor);
+        printData(cursor);
+        return true;
+    }
+
+    private void printData(Cursor cursor) {
+        int pos = cursor.getPosition();
+        String st = Constant.EMPTY_STRING;
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            st += cursor.getString(cursor.getColumnIndex(DataProvider.Entry.KEYWORD)) + ", ";
+        }
+        System.out.println("[Azim-word]"+st);
+        cursor.moveToPosition(pos);
     }
 }

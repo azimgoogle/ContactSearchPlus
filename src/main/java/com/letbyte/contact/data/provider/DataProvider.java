@@ -1,0 +1,203 @@
+package com.letbyte.contact.data.provider;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
+
+
+public class DataProvider {
+
+    public static abstract class Entry implements android.provider.BaseColumns {
+        private static final String TABLE_SUGGESTION = "keyword_suggestion_table";
+
+        public static final String KEYWORD = "keyword";
+        public static final String WEIGHT = "weight";
+    }
+
+    private Context mContext;
+
+    private DataProvider(Context context) {
+        this.mContext = context;
+    }
+
+    private static DataProvider sData;
+    private final int CALL_LOOG_DISPLAY_LIMIT = 100;
+
+    public synchronized static DataProvider onProvider(Context context) {
+        return (sData = sData == null ? new DataProvider(context) : sData);
+    }
+
+    //Can maintain 100 rows only
+    public boolean updateOrInsertSearchHints(CharSequence searchString) {
+        if(searchString == null)
+            throw  new NullPointerException();
+        String query = "UPDATE "+Entry.TABLE_SUGGESTION+" SET " + Entry.WEIGHT + " = " + Entry.WEIGHT +
+                " + 1 WHERE "+Entry.KEYWORD + " = ?";
+        String keyword = searchString.toString();
+        String[] whereArg = new String[]{keyword};
+        LetSQLite sqLite = LetSQLite.onSQLite(mContext);
+        long affectedRowCount = sqLite.rawQueryWithAffectedRowCount(query, whereArg);
+        if(affectedRowCount != 0)
+            return true;
+        ContentValues cv = new ContentValues();
+        cv.put(Entry.KEYWORD, keyword);
+        cv.put(Entry.WEIGHT, 1);
+        return sqLite.insert(Entry.TABLE_SUGGESTION, null, cv);
+    }
+
+    public Cursor getSuggesationHint() {
+        String table = Entry.TABLE_SUGGESTION;
+        String[] projection = new String[]{Entry._ID, Entry.KEYWORD};
+        String where = null;
+        String[] whereArg = null;
+        String orderBy = Entry.KEYWORD + " ASC, " + Entry.WEIGHT + " DESC";
+        return LetSQLite.onSQLite(mContext).query(table, projection, where, whereArg, null, orderBy, null);
+    }
+
+
+    private static final class LetSQLite extends SQLiteOpenHelper {
+        private static String DB_LET = "let.db";
+        private static int DB_VERSION = 1;
+
+        private static Context sContext;
+        private static LetSQLite sLetSQLite;
+
+        private LetSQLite(Context context) {
+            super(context, DB_LET, null, DB_VERSION);
+            sContext = context;
+        }
+
+        public synchronized static LetSQLite onSQLite(Context context) {
+            return (sLetSQLite = sLetSQLite == null ? new LetSQLite(context) : sLetSQLite);
+        }
+
+        @Override
+        public void onOpen(SQLiteDatabase db) {
+            super.onOpen(db);
+            if (!db.isReadOnly()) {
+                // Enable foreign key constraints
+                db.execSQL("PRAGMA foreign_keys=ON;");
+            }
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+
+            String createSuggestionTable = String.format(
+                    "create table if not exists %s (" +
+                            "%s integer primary key, " +
+                            "%s text not null unique, " +
+                            "%s int not null" +
+                            ")",
+                    Entry.TABLE_SUGGESTION,
+                    Entry._ID,
+                    Entry.KEYWORD,
+                    Entry.WEIGHT
+            );
+
+            db.beginTransaction();
+            try {
+                db.execSQL(createSuggestionTable);
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        }
+
+        private boolean insert(String table, String nullColumnHack, ContentValues values) {
+            boolean isSuccess;
+            SQLiteDatabase db = getWritableDatabase();
+            db.beginTransaction();
+            try {
+                isSuccess = db.insert(table, nullColumnHack, values) != -1;
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+            return isSuccess;
+        }
+
+        private boolean update(String table, ContentValues values, String whereClause, String[] whereArgs) {
+            boolean isSuccess;
+            SQLiteDatabase db = getWritableDatabase();
+            db.beginTransaction();
+            try {
+                isSuccess = db.update(table, values, whereClause, whereArgs) > 0;
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+            return isSuccess;
+        }
+
+        private long rawQueryWithAffectedRowCount(String rawUpdateQuery, String[] arg) {
+            long affectedRowCount = 0;
+            SQLiteDatabase db = getWritableDatabase();
+            db.beginTransaction();
+            try {
+                db.rawQuery(rawUpdateQuery, arg);
+                Cursor cursor = db.rawQuery("SELECT changes() AS affected_row_count", null);
+                if(cursor != null) {
+                    if(cursor.moveToFirst()) {
+                        affectedRowCount = cursor.getLong(cursor.getColumnIndex("affected_row_count"));
+                    }
+                    cursor.close();
+                }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+            return affectedRowCount;
+        }
+
+        private Cursor query(String table, String[] projectionIn, String selection, String[] selectionArgs, String groupBy, String sortOrder, String limit) {
+            SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+            builder.setTables(table);
+            Cursor cursor;
+            SQLiteDatabase db = getReadableDatabase();
+            db.beginTransaction();
+            try {
+                cursor = builder.query(db, projectionIn, selection, selectionArgs, groupBy, null, sortOrder, limit);
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+
+            return cursor;
+        }
+
+        private boolean delete(String table, String whereClause, String[] whereArgs) {
+            boolean isSuccess;
+            SQLiteDatabase db = getWritableDatabase();
+            db.beginTransaction();
+            try {
+                isSuccess = db.delete(table, whereClause, whereArgs) > 0;
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+            return isSuccess;
+        }
+
+        private Cursor rawQuery(String query) {
+            Cursor cursor;
+            SQLiteDatabase db = getReadableDatabase();
+            db.beginTransaction();
+            try {
+                cursor = db.rawQuery(query, null);
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+
+            return cursor;
+        }
+    }
+}

@@ -8,6 +8,7 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -29,6 +30,7 @@ import android.widget.ProgressBar;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.Tracker;
+import com.kobakei.ratethisapp.RateThisApp;
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
 import com.letbyte.contact.application.Application;
@@ -38,6 +40,7 @@ import com.letbyte.contact.control.Util;
 import com.letbyte.contact.data.model.Contact;
 import com.letbyte.contact.data.provider.DataProvider;
 import com.letbyte.contact.databinding.ActivityMainBinding;
+import com.letbyte.contact.drawable.RecyclerViewDividerItemDecorator;
 import com.letbyte.contact.listener.ContactLoadingFinishedListener;
 import com.letbyte.contact.listener.RecyclerItemClickListener;
 import com.letbyte.contact.loader.AddressLoaderCommand;
@@ -68,17 +71,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             Constant.RELATION};//Change final and search indexes during Adapter syncing,to reduce search domain
     private boolean isToCallOnSingleTap;
     private SearchView mSearchView;
-    private Tracker tracker;
     private ContactAdapter mAdapter;
     private SimpleCursorAdapter mCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Application application = (Application) getApplication();
-        tracker = application.getDefaultTracker();
-
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
@@ -87,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //getRecyclerView().addItemDecoration(new RecyclerViewDividerItemDecorator(this, null));
+        getRecyclerView().addItemDecoration(new RecyclerViewDividerItemDecorator(this, null));
         mAdapter = new ContactAdapter(R.layout.contact, Constant.contactModelList);
         recyclerView.setAdapter(mAdapter);
         syncAdapter();
@@ -139,9 +137,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         boolean bootSynced = PrefManager.on(this.getBaseContext()).isBootSynced();
         boolean synced = PrefManager.on(this.getBaseContext()).isSynced();
         if (!bootSynced) {
-            new SyncTask(this.getBaseContext()).execute(new HashMap<String, Boolean>());
+            //new SyncTask(this.getBaseContext()).execute(new HashMap<String, Boolean>());
         } else if (!synced) {
-            new SyncTask(this.getBaseContext()).execute(PrefManager.on(getBaseContext()).getConfig());
+            //new SyncTask(this.getBaseContext()).execute(PrefManager.on(getBaseContext()).getConfig());
         }
 
         final int[] to = new int[] {android.R.id.text1};
@@ -151,6 +149,35 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 new String[]{DataProvider.Entry._ID, DataProvider.Entry.KEYWORD},
                 to,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Monitor launch times and interval from installation
+        RateThisApp.onStart(this);
+        // If the criteria is satisfied, "Rate this app" dialog will be shown
+        RateThisApp.showRateDialogIfNeeded(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ((Application) getApplication()).trackMe(getClass().getName());
+
+        resolveAdView();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        destroyAdView();
+    }
+
+    private void destroyAdView() {
+        getAdView().destroy();
     }
 
     private AdView getAdView() {
@@ -176,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 });
 
                 if (isOnline)
-                    Util.sleep(3);
+                    Util.sleep(2);
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -188,15 +215,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }).start();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-        Application application = (Application) getApplication();
-        application.trackMe(getClass().getName());
-
-        resolveAdView();
-    }
 
     private void showContextMenu(final long contactID, View view) {
         //Creating the instance of PopupMenu
@@ -263,12 +282,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
-        searchMenuItem.expandActionView();
+        final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         mSearchView = searchView;
         searchView.setOnQueryTextListener(this);
         searchView.setSuggestionsAdapter(mCursorAdapter);
+
+        mSearchView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                searchMenuItem.expandActionView();
+            }
+        }, 800);
+
         return true;
     }
 

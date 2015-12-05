@@ -1,8 +1,5 @@
 package com.letbyte.contact.loader;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,11 +9,12 @@ import android.provider.ContactsContract.CommonDataKinds.Organization;
 import android.provider.ContactsContract.Data;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 
 import com.letbyte.contact.control.Constant;
 import com.letbyte.contact.data.model.Contact;
+
+import java.util.List;
 
 //Use separate thread for search and Query to the native-phonebook
 public class OrganizationLoaderCommand implements Command {

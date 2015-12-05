@@ -49,12 +49,17 @@ public class DataProvider {
     }
 
     public Cursor getSuggesationHint() {
+        return getSuggesationHint(null);
+    }
+
+    public Cursor getSuggesationHint(String query) {
         String table = Entry.TABLE_SUGGESTION;
         String[] projection = new String[]{Entry._ID, Entry.KEYWORD};
-        String where = null;
+        String where = query == null || query.length() < 1 ? null : Entry.KEYWORD + " LIKE '%"+ query +"%'";
         String[] whereArg = null;
         String orderBy = Entry.KEYWORD + " ASC, " + Entry.WEIGHT + " DESC";
-        return LetSQLite.onSQLite(mContext).query(table, projection, where, whereArg, null, orderBy, null);
+        String limit = " 100";
+        return LetSQLite.onSQLite(mContext).query(table, projection, where, whereArg, null, orderBy, limit);
     }
 
 

@@ -1,23 +1,20 @@
 package com.letbyte.contact.loader;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.RemoteException;
 import android.provider.ContactsContract.CommonDataKinds.Note;
-import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 
 import com.letbyte.contact.control.Constant;
 import com.letbyte.contact.data.model.Contact;
+
+import java.util.List;
 
 //Use separate thread for search and Query to the native-phonebook
 public class NotesLoaderCommand implements Command {
@@ -71,7 +68,7 @@ public class NotesLoaderCommand implements Command {
                         return ContactList;
                     }
                 } catch (RemoteException e) {
-                    System.out.println("[Azim-contact]::" + e.toString());
+//                    System.out.println("[Azim-contact]::" + e.toString());
                     e.printStackTrace();
                 } finally {
                     if (notesCursor != null)

@@ -157,7 +157,7 @@ public class ContactLoaderCommand implements Command {
                                 Constant.cIDArrayListIndexMap.put(cID, index++);
                                 //contactModelList.add(ContactModel.putInContactModel(cID, displayNamePrimaryOrig, displayNameList, imageUrl));//Add number list at same time
                                 contactModelList.add(new Contact(cID, displayNamePrimaryOrig, imageUrl, displayNameList));
-                                System.out.println("[Azim-contact]::" + displayNamePrimary);
+//                                System.out.println("[Azim-contact]::" + displayNamePrimary);
                             } //HashMap might automatically reject new entry check which is best
                         }
                         System.out.println("[Azim-time]::"+(System.currentTimeMillis() - t1) + " ms");

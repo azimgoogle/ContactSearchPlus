@@ -8,10 +8,8 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -29,10 +27,10 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.analytics.Tracker;
 import com.kobakei.ratethisapp.RateThisApp;
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
+import com.letbyte.contact.adapter.SearchViewSuggestionAdapter;
 import com.letbyte.contact.application.Application;
 import com.letbyte.contact.control.Constant;
 import com.letbyte.contact.control.PrefManager;
@@ -51,14 +49,13 @@ import com.letbyte.contact.loader.NotesLoaderCommand;
 import com.letbyte.contact.loader.OrganizationLoaderCommand;
 import com.letbyte.contact.loader.PhoneNumberLoaderCommand;
 import com.letbyte.contact.loader.RelationLoaderCommand;
-import com.letbyte.contact.task.SyncTask;
 import com.letbyte.contact.utility.ContactUtility;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, ContactLoadingFinishedListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener,
+        ContactLoadingFinishedListener, SearchView.OnSuggestionListener {
 
     private ActivityMainBinding binding;
     private final int[] searchIndexes = new int[]{
@@ -72,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private boolean isToCallOnSingleTap;
     private SearchView mSearchView;
     private ContactAdapter mAdapter;
-    private SimpleCursorAdapter mCursorAdapter;
+    private SearchViewSuggestionAdapter mCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,10 +140,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         final int[] to = new int[] {android.R.id.text1};
-        mCursorAdapter = new SimpleCursorAdapter(this,
+        mCursorAdapter = new SearchViewSuggestionAdapter(this,
                 R.layout.query_suggestion,
                 null,
-                new String[]{DataProvider.Entry._ID, DataProvider.Entry.KEYWORD},
+                new String[]{DataProvider.Entry._ID, DataProvider.Entry.KEYWORD},//Reduce to one column only
                 to,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
     }
@@ -288,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mSearchView = searchView;
         searchView.setOnQueryTextListener(this);
         searchView.setSuggestionsAdapter(mCursorAdapter);
+        searchView.setOnSuggestionListener(this);
 
         mSearchView.postDelayed(new Runnable() {
             @Override
@@ -327,15 +325,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return false;
+        mAdapter.getFilter().filter(query);
+        return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
         /*final List<Contact> filteredContacts = filter(Constant.contactModelList, newText);
         apply(filteredContacts);*/
-        mAdapter.getFilter().filter(newText);
-        return true;
+        populateSuggestionData(newText);
+        return onQueryTextSubmit(newText);
     }
 
 
@@ -472,12 +471,38 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Cursor cursor = DataProvider.onProvider(getApplicationContext()).getSuggesationHint();
         if(cursor == null)
             return false;
+        /*ArrayList<String> suggesionList = new ArrayList<>(100);
+        if(cursor.moveToFirst()) {
+            final int indexKeyword = cursor.getColumnIndex(DataProvider.Entry.KEYWORD);
+            do {
+                suggesionList.add(cursor.getString(indexKeyword));
+            } while(cursor.moveToNext());
+        }
+        mCursorAdapter.setSuggestionList(suggesionList);*/
         mCursorAdapter.changeCursor(cursor);
-        printData(cursor);
+//        printData(cursor);
         return true;
     }
 
-    private void printData(Cursor cursor) {
+    //Implement this search only
+    private boolean populateSuggestionData(String query) {
+        Cursor cursor = DataProvider.onProvider(getApplicationContext()).getSuggesationHint(query);
+        if(cursor == null)
+            return false;
+        /*ArrayList<String> suggesionList = new ArrayList<>(100);
+        if(cursor.moveToFirst()) {
+            final int indexKeyword = cursor.getColumnIndex(DataProvider.Entry.KEYWORD);
+            do {
+                suggesionList.add(cursor.getString(indexKeyword));
+            } while(cursor.moveToNext());
+        }
+        mCursorAdapter.setSuggestionList(suggesionList);*/
+        mCursorAdapter.changeCursor(cursor);
+//        printData(cursor);
+        return true;
+    }
+
+    /*private void printData(Cursor cursor) {
         int pos = cursor.getPosition();
         String st = Constant.EMPTY_STRING;
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -485,5 +510,22 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
         System.out.println("[Azim-word]"+st);
         cursor.moveToPosition(pos);
+    }*/
+
+    @Override
+    public boolean onSuggestionSelect(int position) {
+        return false;
+    }
+
+    @Override
+    public boolean onSuggestionClick(int position) {
+//        String filterString = mCursorAdapter.getItem(position);
+        Cursor cursor = mCursorAdapter.getCursor();
+        cursor.moveToPosition(position);
+        String filterString = cursor.getString(cursor.getColumnIndex(DataProvider.Entry.KEYWORD));
+        System.out.println("[Azim-select-word]::"+filterString);
+        mSearchView.setQuery(filterString, false);//false as we call submit automatically
+//        onQueryTextChange(filterString);
+        return true;
     }
 }

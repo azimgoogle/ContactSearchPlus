@@ -230,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         break;
                     case R.id.message:
                         sendMessage(contactID);
+                        DataProvider.onProvider(getApplicationContext()).importDatabase();
                         break;
                     case R.id.details:
                         showContactDetailsView(contactID);
@@ -479,12 +480,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             } while(cursor.moveToNext());
         }
         mCursorAdapter.setSuggestionList(suggesionList);*/
+        System.out.println("[Azim-cursor-count]::"+cursor.getCount());
         mCursorAdapter.changeCursor(cursor);
 //        printData(cursor);
         return true;
     }
 
-    //Implement this search only
     private boolean populateSuggestionData(String query) {
         Cursor cursor = DataProvider.onProvider(getApplicationContext()).getSuggesationHint(query);
         if(cursor == null)
@@ -497,6 +498,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             } while(cursor.moveToNext());
         }
         mCursorAdapter.setSuggestionList(suggesionList);*/
+        System.out.println("[Azim-cursor-count]::"+cursor.getCount());
         mCursorAdapter.changeCursor(cursor);
 //        printData(cursor);
         return true;

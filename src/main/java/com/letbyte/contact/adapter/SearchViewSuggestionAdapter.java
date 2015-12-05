@@ -30,7 +30,9 @@ public class SearchViewSuggestionAdapter extends SimpleCursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        textView.setText((cursor.getString(cursor.getColumnIndex(DataProvider.Entry.KEYWORD))));
+        String text = cursor.getString(cursor.getColumnIndex(DataProvider.Entry.KEYWORD));
+        System.out.println("[Azim-suggestion-text]::"+text);
+        textView.setText(text);
     }
 
     @Override

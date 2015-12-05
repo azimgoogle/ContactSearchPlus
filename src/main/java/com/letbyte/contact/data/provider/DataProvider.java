@@ -6,6 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.os.Environment;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 
 
 public class DataProvider {
@@ -62,6 +69,28 @@ public class DataProvider {
         return LetSQLite.onSQLite(mContext).query(table, projection, where, whereArg, null, orderBy, limit);
     }
 
+    public void importDatabase() {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+
+            String currentDBPath = "//data//"+ mContext.getPackageName() +"//databases//let.db";
+            String backupDBPath = "let.db";
+            File currentDB = new File(data, currentDBPath);
+            File backupDB = new File(sd, backupDBPath);
+
+            FileChannel src = new FileInputStream(currentDB).getChannel();
+            FileChannel dst = new FileOutputStream(backupDB).getChannel();
+            dst.transferFrom(src, 0, src.size());
+            src.close();
+            dst.close();
+            Toast.makeText(mContext.getApplicationContext(), backupDB.toString(), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(mContext.getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+        }
+    }
+
 
     private static final class LetSQLite extends SQLiteOpenHelper {
         private static String DB_LET = "let.db";
@@ -81,11 +110,11 @@ public class DataProvider {
 
         @Override
         public void onOpen(SQLiteDatabase db) {
-            super.onOpen(db);
+            super.onOpen(db);/*
             if (!db.isReadOnly()) {
                 // Enable foreign key constraints
                 db.execSQL("PRAGMA foreign_keys=ON;");
-            }
+            }*/
         }
 
         @Override

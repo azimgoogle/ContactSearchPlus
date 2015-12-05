@@ -1,4 +1,9 @@
 <resources>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="nav_search">Search</string>
     <string name="app_name">Contact Search</string>
     <!--<string name="app_name">Contact Search Plus</string>-->
     <string name="action_settings">Settings</string>
@@ -41,5 +46,4 @@
 
     <!-- AdMob -->
     <string name="banner_ad_unit_id">ca-app-pub-9664359908202679/2179765749</string>
-
 </resources>

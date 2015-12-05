@@ -14,9 +14,28 @@ import android.view.View;
 
 import com.letbyte.contact.R;
 import com.letbyte.contact.control.PrefManager;
-import com.letbyte.contact.task.SyncTask;
 
-import java.util.Map;
+/*public class SettingsActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+      *//*  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });*//*
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+}*/
 
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -35,7 +54,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
         if (isChanged) {
             PrefManager.on(this).setSynced(false);
-           // new SyncTask(this.getBaseContext()).execute(PrefManager.on(this).getConfig());
+            // new SyncTask(this.getBaseContext()).execute(PrefManager.on(this).getConfig());
         }
 
         Intent resultIntent = new Intent();

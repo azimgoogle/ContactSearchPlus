@@ -20,6 +20,13 @@ public class RecyclerViewDividerItemDecorator extends RecyclerView.ItemDecoratio
     private boolean mShowLastDivider = false;
 
 
+    public RecyclerViewDividerItemDecorator(Context context) {
+        final TypedArray a = context
+                .obtainStyledAttributes(null, new int[]{android.R.attr.listDivider});
+        mDivider = a.getDrawable(0);
+        a.recycle();
+    }
+
     public RecyclerViewDividerItemDecorator(Context context, AttributeSet attrs) {
         final TypedArray a = context
                 .obtainStyledAttributes(attrs, new int[]{android.R.attr.listDivider});

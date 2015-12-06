@@ -11,27 +11,23 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.view.ActionMode;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
@@ -61,7 +57,6 @@ import com.letbyte.contact.loader.RelationLoaderCommand;
 import com.letbyte.contact.utility.ContactUtility;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -317,7 +312,8 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    return false;
+                    populateSuggestionData(newText);
+                    return onQueryTextSubmit(newText);
                 }
             };
 
@@ -382,14 +378,13 @@ public class MainActivity extends AppCompatActivity {
                 Cursor cursor = DataProvider.onProvider(getActivity().getApplicationContext()).getSuggesationHint(query);
                 if (cursor == null)
                     return false;
-        /*ArrayList<String> suggesionList = new ArrayList<>(100);
-        if(cursor.moveToFirst()) {
-            final int indexKeyword = cursor.getColumnIndex(DataProvider.Entry.KEYWORD);
-            do {
-                suggesionList.add(cursor.getString(indexKeyword));
-            } while(cursor.moveToNext());
-        }
-        mCursorAdapter.setSuggestionList(suggesionList);*/
+                ArrayList<String> suggesionList = new ArrayList<>(100);
+                if(cursor.moveToFirst()) {
+                    final int indexKeyword = cursor.getColumnIndex(DataProvider.Entry.KEYWORD);
+                    do {
+                        suggesionList.add(cursor.getString(indexKeyword));
+                    } while(cursor.moveToNext());
+                }
                 mCursorAdapter.changeCursor(cursor);
 //        printData(cursor);
                 return true;
@@ -441,6 +436,7 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case R.id.message:
                                 sendMessage(contactID);
+                                DataProvider.onProvider(getActivity().getApplicationContext()).importDatabase();
                                 break;
                             case R.id.details:
                                 showContactDetailsView(contactID);

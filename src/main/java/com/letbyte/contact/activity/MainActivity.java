@@ -361,14 +361,15 @@ public class MainActivity extends AppCompatActivity {
                 Cursor cursor = DataProvider.onProvider(getActivity().getApplicationContext()).getSuggesationHint();
                 if (cursor == null)
                     return false;
-        /*ArrayList<String> suggesionList = new ArrayList<>(100);
-        if(cursor.moveToFirst()) {
-            final int indexKeyword = cursor.getColumnIndex(DataProvider.Entry.KEYWORD);
-            do {
-                suggesionList.add(cursor.getString(indexKeyword));
-            } while(cursor.moveToNext());
-        }
-        mCursorAdapter.setSuggestionList(suggesionList);*/
+                ArrayList<String> suggesionList = new ArrayList<>(100);
+                if(cursor.moveToFirst()) {
+                    final int indexKeyword = cursor.getColumnIndex(DataProvider.Entry.KEYWORD);
+                    do {
+                        System.out.println("[Azim-suggestion-initial]::"+cursor.getString(indexKeyword));
+                        suggesionList.add(cursor.getString(indexKeyword));
+                    } while(cursor.moveToNext());
+                }
+                mCursorAdapter.setSuggestionList(suggesionList);
                 mCursorAdapter.changeCursor(cursor);
 //        printData(cursor);
                 return true;
@@ -382,10 +383,12 @@ public class MainActivity extends AppCompatActivity {
                 if(cursor.moveToFirst()) {
                     final int indexKeyword = cursor.getColumnIndex(DataProvider.Entry.KEYWORD);
                     do {
+                        System.out.println("[Azim-suggestion]::"+cursor.getString(indexKeyword));
                         suggesionList.add(cursor.getString(indexKeyword));
                     } while(cursor.moveToNext());
                 }
                 mCursorAdapter.changeCursor(cursor);
+                mCursorAdapter.notifyDataSetChanged();
 //        printData(cursor);
                 return true;
             }

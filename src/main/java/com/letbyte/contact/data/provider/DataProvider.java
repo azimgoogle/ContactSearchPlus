@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.database.sqlite.SQLiteStatement;
 import android.os.Environment;
 import android.widget.Toast;
 
@@ -41,14 +42,20 @@ public class DataProvider {
     public boolean updateOrInsertSearchHints(CharSequence searchString) {
         if(searchString == null)
             throw  new NullPointerException();
-        String query = "UPDATE "+Entry.TABLE_SUGGESTION+" SET " + Entry.WEIGHT + " = " + Entry.WEIGHT +
-                " + 1 WHERE "+Entry.KEYWORD + " = ?";
         String keyword = searchString.toString();
+        String query = "UPDATE "+Entry.TABLE_SUGGESTION+" SET " + Entry.WEIGHT + " = " + Entry.WEIGHT +
+                " + 1 WHERE "+Entry.KEYWORD + " = '"+keyword+"'";
         String[] whereArg = new String[]{keyword};
         LetSQLite sqLite = LetSQLite.onSQLite(mContext);
         long affectedRowCount = sqLite.rawQueryWithAffectedRowCount(query, whereArg);
+        /*ContentValues cv1 = new ContentValues();
+        cv1.put(Entry.WEIGHT, Entry.WEIGHT + " + 1");
+        boolean isUpdated = sqLite.update(Entry.TABLE_SUGGESTION, cv1, Entry.KEYWORD + " = ?",
+                new String[]{keyword});*/
         if(affectedRowCount != 0)
             return true;
+        /*if(isUpdated)
+            return true;*/
         ContentValues cv = new ContentValues();
         cv.put(Entry.KEYWORD, keyword);
         cv.put(Entry.WEIGHT, 1);
@@ -122,9 +129,9 @@ public class DataProvider {
 
             String createSuggestionTable = String.format(
                     "create table if not exists %s (" +
-                            "%s integer primary key, " +
+                            "%s INTEGER primary key NOT NULL, " +
                             "%s text not null unique, " +
-                            "%s int not null" +
+                            "%s INTEGER not null DEFAULT 1" +
                             ")",
                     Entry.TABLE_SUGGESTION,
                     Entry._ID,
@@ -176,14 +183,20 @@ public class DataProvider {
             SQLiteDatabase db = getWritableDatabase();
             db.beginTransaction();
             try {
-                db.rawQuery(rawUpdateQuery, arg);
+                SQLiteStatement st = db.compileStatement(rawUpdateQuery);
+                /*int length = arg.length;
+                for(int I = 1; I <= length; I++) {
+                    st.bindString(I, arg[I]);
+                }*/
+                affectedRowCount = st.executeUpdateDelete();
+                /*db.rawQuery(rawUpdateQuery, arg);
                 Cursor cursor = db.rawQuery("SELECT changes() AS affected_row_count", null);
                 if(cursor != null) {
                     if(cursor.moveToFirst()) {
                         affectedRowCount = cursor.getLong(cursor.getColumnIndex("affected_row_count"));
                     }
                     cursor.close();
-                }
+                }*/
                 db.setTransactionSuccessful();
             } finally {
                 db.endTransaction();

@@ -29,6 +29,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         logic.applyLogic();
     }
 
-    @Override
+/*    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
@@ -96,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
         searchAutoCompleteTextView.setThreshold(1);
 
         return true;
-    }
+    }*/
 
-    @Override
+/*    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -231,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
 
             activity.setSupportActionBar(getToolbar());
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
             ActionBarDrawerToggle toggle =
                     new ActionBarDrawerToggle(
@@ -666,6 +666,54 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
+            }
+
+            @Override
+            public void onCreate(@Nullable Bundle savedInstanceState) {
+                super.onCreate(savedInstanceState);
+
+                setHasOptionsMenu(true);
+            }
+
+            @Override
+            public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+                //inflater.inflate(R.menu.menu_sample, menu);
+
+
+                inflater.inflate(R.menu.main, menu);
+                final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+
+                SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+
+                searchView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        searchMenuItem.expandActionView();
+                    }
+                }, KEYBOARD_OPEN_DELAY);
+
+                mSearchView = searchView;
+                searchView.setOnQueryTextListener(onQueryTextListener);
+                searchView.setSuggestionsAdapter(mCursorAdapter);
+                searchView.setOnSuggestionListener(onSuggestionListener);
+
+                AutoCompleteTextView searchAutoCompleteTextView = (AutoCompleteTextView)
+                        searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+                searchAutoCompleteTextView.setThreshold(1);
+
+               /* super.onCreateOptionsMenu(menu, inflater);*/
+            }
+
+            @Override
+            public boolean onOptionsItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_settings:
+                        Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                        startActivityForResult(intent, Constant.REQUESTCODE_SETTINGS);
+                        return true;
+                }
+
+                return super.onOptionsItemSelected(item); // important line
             }
 
             @Override

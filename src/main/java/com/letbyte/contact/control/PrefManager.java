@@ -76,6 +76,12 @@ public class PrefManager {
     }
 
 
+    public boolean isToSuggest() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        if (pref == null) return false;
+        return pref.getBoolean(context.getString(R.string.suggestion), true);
+    }
+
     public boolean isFilteredByNumber() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         if (pref == null) return true;

@@ -24,6 +24,9 @@
     <string name="priority_search">Priority search</string>
     <string name="priority_search_summary">Shows favorite or frequently contacted contacts first</string>
 
+    <string name="suggestion">Search Suggestion</string>
+    <string name="suggestion_summary">Turn search suggestion On/Off</string>
+
     <string name="search_in_phone_numbers">Search in phone number contacts</string>
     <string name="search_in_phone_numbers_summary">Search restricts only which contacts has phone number. Improves performance.</string>
 

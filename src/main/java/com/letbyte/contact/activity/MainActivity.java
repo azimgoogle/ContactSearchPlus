@@ -320,6 +320,7 @@ public class MainActivity extends AppCompatActivity {
             private static final String navItem = "navItem";
             private static final int navNone = 0;
             private static final int navSearch = 1;
+            boolean isToSuggest;
 
 
             private final int[] searchIndexes = new int[]{
@@ -348,7 +349,9 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onQueryTextChange(String newText) {
                     if(newText == null || newText.length() < 1)
                         return false;
-                    populateSuggestionData(newText);
+                    if(isToSuggest) {
+                        populateSuggestionData(newText);
+                    }
                     return onQueryTextSubmit(newText);
                 }
             };
@@ -388,7 +391,6 @@ public class MainActivity extends AppCompatActivity {
                     if (mSearchView != null) {
                         String filterString = mSearchView.getQuery().toString();
                         onQueryTextListener.onQueryTextChange(filterString);
-                        populateSuggestionData();
                     }
                 }
             };
@@ -413,6 +415,7 @@ public class MainActivity extends AppCompatActivity {
 
             final int[] to = new int[] {R.id.text1};
             final String[] from = new String[]{DataProvider.Entry.KEYWORD};
+
             private boolean populateSuggestionData(String query) {
                 if(suggesionList == null)
                     return false;
@@ -605,6 +608,13 @@ public class MainActivity extends AppCompatActivity {
                         ContactClient.getInstance().setContactLoadingFinishedListener(finishedListener);
                         ContactClient.getInstance().addCommand(new ContactLoaderCommand(getActivity(), progressBar, mAdapter,
                                 Constant.contactModelList, isToFilterPhoneNumber, isPrioritizeStrequent));
+
+                        isToSuggest = PrefManager.on(getActivity()).isToSuggest();
+                        if(isToSuggest) {
+                            populateSuggestionData();
+                        } else {
+                            mSearchView.setSuggestionsAdapter(null);
+                        }
 
                         boolean isToload = PrefManager.on(getActivity()).isNumber();
                         if (isToload)

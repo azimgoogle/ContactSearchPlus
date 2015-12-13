@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    if(newText == null || newText.length() < 1)
+                    if(newText == null)
                         return false;
                     if(isToSuggest) {
                         populateSuggestionData(newText);
@@ -485,7 +485,7 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case R.id.message:
                                 sendMessage(contactID);
-                                DataProvider.onProvider(getActivity().getApplicationContext()).importDatabase();
+//                                DataProvider.onProvider(getActivity().getApplicationContext()).importDatabase();
                                 break;
                             case R.id.details:
                                 showContactDetailsView(contactID);

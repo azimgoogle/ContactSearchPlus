@@ -426,12 +426,16 @@ public class MainActivity extends AppCompatActivity {
                 int I = 0;
                 query = query.toLowerCase();
                 final int length = suggesionList.length;
+                int suggestionCount = 0;
+                final int numberOfSuggestionRows = Constant.NUMBER_OF_SUGGESTION_ROW;
                 do
                 {
-                    if(suggesionList[I].contains(query))
+                    if(suggesionList[I].contains(query)) {
                         matrixCursor.addRow(new Object[]{I, suggesionList[I]});
+                        suggestionCount++;
+                    }
                     I++;
-                } while(I < length);
+                } while(I < length && suggestionCount < numberOfSuggestionRows);
                 mCursorAdapter = new SimpleCursorAdapter(getActivity(),
                         R.layout.query_suggestion,
                         matrixCursor, from,

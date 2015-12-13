@@ -13,6 +13,7 @@ import java.util.Map;
 public interface Constant {
 
     int MAXIMUM_ROW_FOR_SUGGESTION = 100;
+    int NUMBER_OF_SUGGESTION_ROW = 5;
     int MILLI = 1000;
     int SECOND = 1 * MILLI;
     int MINUTE = 60 * SECOND;

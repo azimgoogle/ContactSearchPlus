@@ -433,7 +433,8 @@ public class MainActivity extends AppCompatActivity {
                 {
                     matchIndex = suggesionList[I].indexOf(query);
                     //Excluding same string as of search string
-                    if(matchIndex > -1 && suggesionList[I].length() > query.length()) {
+//                    if(matchIndex > -1 && suggesionList[I].length() > query.length()) {//Contains
+                    if(matchIndex == 0 && suggesionList[I].length() > query.length()) {//Start with
                         matrixCursor.addRow(new Object[]{I, suggesionList[I]});
                         suggestionCount++;
                     }

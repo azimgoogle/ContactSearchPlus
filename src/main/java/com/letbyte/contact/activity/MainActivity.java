@@ -268,25 +268,49 @@ public class MainActivity extends AppCompatActivity {
             switch (navItemId) {
                 case R.id.nav_search:
                     navItem = NavFragment.navSearch;
+
                     activity.setTitle(activity.getString(R.string.nav_search));
+
+                    navFragment = new NavFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(NavFragment.navItem, navItem);
+                    navFragment.setArguments(bundle);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.
+                                    getSupportFragmentManager().
+                                    beginTransaction().
+                                    setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).
+                                    replace(R.id.frameLayout, navFragment).commitAllowingStateLoss();
+                        }
+                    }, DRAWER_LAUNCH_DELAY);
+
                     break;
+                case R.id.nav_settings:
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(activity, SettingsActivity.class);
+                            activity.startActivityForResult(intent, Constant.REQUESTCODE_SETTINGS);
+                        }
+                    }, DRAWER_LAUNCH_DELAY);
+
+
+                    return;
+                case R.id.nav_rate:
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            RateThisApp.showRateDialog(activity);
+                        }
+                    }, DRAWER_LAUNCH_DELAY);
+
+                    return;
             }
 
-            navFragment = new NavFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt(NavFragment.navItem, navItem);
-            navFragment.setArguments(bundle);
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    activity.
-                            getSupportFragmentManager().
-                            beginTransaction().
-                            setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).
-                            replace(R.id.frameLayout, navFragment).commitAllowingStateLoss();
-                }
-            }, DRAWER_LAUNCH_DELAY);
 
         }
 

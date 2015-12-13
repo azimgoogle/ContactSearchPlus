@@ -1,4 +1,4 @@
-/*
+package com.letbyte.contact.adapter;/*
 package com.letbyte.contact.adapter;
 
 import android.databinding.DataBindingUtil;

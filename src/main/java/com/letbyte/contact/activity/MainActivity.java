@@ -64,6 +64,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private Logic logic;
+    private static final int KEYBOARD_OPEN_DELAY = 500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 searchMenuItem.expandActionView();
             }
-        }, 800);
+        }, KEYBOARD_OPEN_DELAY);
+        
         logic.navFragment.mSearchView = searchView;
         searchView.setOnQueryTextListener(logic.navFragment.onQueryTextListener);
         final int[] to = new int[] {R.id.text1};

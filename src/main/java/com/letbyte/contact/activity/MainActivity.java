@@ -59,8 +59,6 @@ import com.letbyte.contact.loader.PhoneNumberLoaderCommand;
 import com.letbyte.contact.loader.RelationLoaderCommand;
 import com.letbyte.contact.utility.ContactUtility;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
 
     private Logic logic;
@@ -88,13 +86,6 @@ public class MainActivity extends AppCompatActivity {
         }, 800);
         logic.navFragment.mSearchView = searchView;
         searchView.setOnQueryTextListener(logic.navFragment.onQueryTextListener);
-        final int[] to = new int[] {R.id.text1};
-        logic.navFragment.mCursorAdapter = new SimpleCursorAdapter(this,
-                R.layout.query_suggestion,
-                null,
-                new String[]{DataProvider.Entry._ID, DataProvider.Entry.KEYWORD},//Reduce to one column only
-                to,
-                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         searchView.setSuggestionsAdapter(logic.navFragment.mCursorAdapter);
         searchView.setOnSuggestionListener(logic.navFragment.onSuggestionListener);
 
@@ -329,28 +320,9 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-//                    populateSuggestionData(newText);
-                    ArrayList<String> mList = new ArrayList<String>();
-                    mList.add("Test 1");
-                    mList.add("Test 2");
-                    mList.add("Test 3");
-                    mList.add("Test 4");
-                    mList.add("Test 5");
-                    mList.add("Test 6");
-                    mList.add("Test 7");
-                    mList.add("Test 8");
-                    mList.add("Test 9");
-                    mList.add("Test 10");
-                    final MatrixCursor c = new MatrixCursor(new String[] { BaseColumns._ID, "keyword"});
-                    for (int i=0; i < mList.size(); i++)
-                    {
-                        if (mList.get(i).toLowerCase().startsWith(newText.toLowerCase()))
-                        {
-                            c.addRow(new Object[]{i, mList.get(i)});
-                        }
-                    }
-                    mCursorAdapter.changeCursor(c);
-                    mCursorAdapter.notifyDataSetChanged();
+                    if(newText == null || newText.length() < 1)
+                        return false;
+                    populateSuggestionData(newText);
                     return onQueryTextSubmit(newText);
                 }
             };
@@ -395,38 +367,46 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
+            String[] suggesionList = null;
             private boolean populateSuggestionData() {
                 Cursor cursor = DataProvider.onProvider(getActivity().getApplicationContext()).getSuggesationHint();
                 if (cursor == null)
                     return false;
-                ArrayList<String> suggesionList = new ArrayList<>(100);
                 if(cursor.moveToFirst()) {
+                    suggesionList = new String[cursor.getCount()];
                     final int indexKeyword = cursor.getColumnIndex(DataProvider.Entry.KEYWORD);
+                    int I = 0;
                     do {
                         System.out.println("[Azim-suggestion-initial]::"+cursor.getString(indexKeyword));
-                        suggesionList.add(cursor.getString(indexKeyword));
+                        suggesionList[I++] = cursor.getString(indexKeyword);
                     } while(cursor.moveToNext());
                 }
-                mCursorAdapter.changeCursor(cursor);
-//        printData(cursor);
                 return true;
             }
 
+
+            final int[] to = new int[] {R.id.text1};
+            final String[] from = new String[]{DataProvider.Entry.KEYWORD};
             private boolean populateSuggestionData(String query) {
-                Cursor cursor = DataProvider.onProvider(getActivity().getApplicationContext()).getSuggesationHint(query);
-                if (cursor == null)
+                if(suggesionList == null)
                     return false;
-                ArrayList<String> suggesionList = new ArrayList<>(100);
-                if(cursor.moveToFirst()) {
-                    final int indexKeyword = cursor.getColumnIndex(DataProvider.Entry.KEYWORD);
-                    do {
-                        System.out.println("[Azim-suggestion]::"+cursor.getString(indexKeyword));
-                        suggesionList.add(cursor.getString(indexKeyword));
-                    } while(cursor.moveToNext());
-                }
-                mCursorAdapter.changeCursor(cursor);
-                mCursorAdapter.notifyDataSetChanged();
-//        printData(cursor);
+
+                final MatrixCursor matrixCursor = new MatrixCursor(new String[] { BaseColumns._ID, DataProvider.Entry.KEYWORD});
+                int I = 0;
+                query = query.toLowerCase();
+                final int length = suggesionList.length;
+                do
+                {
+                    if(suggesionList[I].contains(query))
+                        matrixCursor.addRow(new Object[]{I, suggesionList[I]});
+                    I++;
+                } while(I < length);
+                mCursorAdapter = new SimpleCursorAdapter(getActivity(),
+                        R.layout.query_suggestion,
+                        matrixCursor, from,
+                        to,
+                        CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+                mSearchView.setSuggestionsAdapter(mCursorAdapter);
                 return true;
             }
 

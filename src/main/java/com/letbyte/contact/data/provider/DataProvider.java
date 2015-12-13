@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteStatement;
 import android.os.Environment;
 import android.widget.Toast;
 
+import com.letbyte.contact.control.Constant;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -62,6 +64,7 @@ public class DataProvider {
         return sqLite.insert(Entry.TABLE_SUGGESTION, null, cv);
     }
 
+    //These two methods will be unified later
     public Cursor getSuggesationHint() {
         return getSuggesationHint(null);
     }
@@ -72,7 +75,7 @@ public class DataProvider {
         String where = query == null || query.length() < 1 ? null : Entry.KEYWORD + " LIKE '%"+ query +"%'";
         String[] whereArg = null;
         String orderBy = Entry.KEYWORD + " ASC, " + Entry.WEIGHT + " DESC";
-        String limit = " 100";
+        String limit = " "+ Constant.MAXIMUM_ROW_FOR_SUGGESTION;
         return LetSQLite.onSQLite(mContext).query(table, projection, where, whereArg, null, orderBy, limit);
     }
 

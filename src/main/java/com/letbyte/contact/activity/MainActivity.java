@@ -428,9 +428,12 @@ public class MainActivity extends AppCompatActivity {
                 final int length = suggesionList.length;
                 int suggestionCount = 0;
                 final int numberOfSuggestionRows = Constant.NUMBER_OF_SUGGESTION_ROW;
+                int matchIndex;
                 do
                 {
-                    if(suggesionList[I].contains(query)) {
+                    matchIndex = suggesionList[I].indexOf(query);
+                    //Excluding same string as of search string
+                    if(matchIndex > -1 && suggesionList[I].length() > query.length()) {
                         matrixCursor.addRow(new Object[]{I, suggesionList[I]});
                         suggestionCount++;
                     }
@@ -602,7 +605,11 @@ public class MainActivity extends AppCompatActivity {
                 int navItem = getNavItem();
                 switch (navItem) {
                     case navSearch:
-
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 &&
+                                getActivity().checkSelfPermission(Manifest.permission.READ_CONTACTS) !=
+                                    PackageManager.PERMISSION_GRANTED) {
+                                return;
+                        }
                         ProgressBar progressBar = getProgressBar();
                         progressBar.setVisibility(View.VISIBLE);
                         RecyclerView.Adapter mAdapter = getRecyclerView().getAdapter();

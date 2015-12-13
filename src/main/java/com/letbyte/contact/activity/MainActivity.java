@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         ((Application) getApplication()).trackMe(getClass().getName());
-
         resolveAdView();
     }
 
@@ -176,27 +175,28 @@ public class MainActivity extends AppCompatActivity {
 
                 isOnline = Util.isOnline();
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isOnline) {
+                if (isOnline) {
+                    Util.sleep(2);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
                             getAdView().loadAd(new AdRequest.Builder().build());
+                            getAdView().setVisibility(View.VISIBLE);
                         }
-                    }
-                });
+                    });
 
-                if (isOnline)
+
+                }
+
+               /* if (isOnline)
                     Util.sleep(2);
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
-                        Util.log("Online "+ isOnline);
-
                         getAdView().setVisibility(isOnline ? View.VISIBLE : View.GONE);
                     }
-                });
+                });*/
             }
         }).start();
     }
@@ -271,21 +271,23 @@ public class MainActivity extends AppCompatActivity {
 
                     activity.setTitle(activity.getString(R.string.nav_search));
 
-                    navFragment = new NavFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(NavFragment.navItem, navItem);
-                    navFragment.setArguments(bundle);
+                    if (navFragment == null) {
+                        navFragment = new NavFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(NavFragment.navItem, navItem);
+                        navFragment.setArguments(bundle);
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            activity.
-                                    getSupportFragmentManager().
-                                    beginTransaction().
-                                    setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).
-                                    replace(R.id.frameLayout, navFragment).commitAllowingStateLoss();
-                        }
-                    }, DRAWER_LAUNCH_DELAY);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.
+                                        getSupportFragmentManager().
+                                        beginTransaction().
+                                        setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).
+                                        replace(R.id.frameLayout, navFragment).commitAllowingStateLoss();
+                            }
+                        }, DRAWER_LAUNCH_DELAY);
+                    }
 
                     break;
                 case R.id.nav_settings:

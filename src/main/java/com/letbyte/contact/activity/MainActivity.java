@@ -4,11 +4,13 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -16,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 
@@ -37,7 +41,6 @@ import com.google.android.gms.ads.AdView;
 import com.kobakei.ratethisapp.RateThisApp;
 import com.letbyte.contact.R;
 import com.letbyte.contact.adapter.ContactAdapter;
-import com.letbyte.contact.adapter.SearchViewSuggestionAdapter;
 import com.letbyte.contact.application.Application;
 import com.letbyte.contact.control.Constant;
 import com.letbyte.contact.control.PrefManager;
@@ -76,10 +79,6 @@ public class MainActivity extends AppCompatActivity {
         final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
-        logic.navFragment.mSearchView = searchView;
-        searchView.setOnQueryTextListener(logic.navFragment.onQueryTextListener);
-        searchView.setSuggestionsAdapter(logic.navFragment.mCursorAdapter);
-        searchView.setOnSuggestionListener(logic.navFragment.onSuggestionListener);
 
         searchView.postDelayed(new Runnable() {
             @Override
@@ -87,6 +86,21 @@ public class MainActivity extends AppCompatActivity {
                 searchMenuItem.expandActionView();
             }
         }, 800);
+        logic.navFragment.mSearchView = searchView;
+        searchView.setOnQueryTextListener(logic.navFragment.onQueryTextListener);
+        final int[] to = new int[] {R.id.text1};
+        logic.navFragment.mCursorAdapter = new SimpleCursorAdapter(this,
+                R.layout.query_suggestion,
+                null,
+                new String[]{DataProvider.Entry._ID, DataProvider.Entry.KEYWORD},//Reduce to one column only
+                to,
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        searchView.setSuggestionsAdapter(logic.navFragment.mCursorAdapter);
+        searchView.setOnSuggestionListener(logic.navFragment.onSuggestionListener);
+
+        AutoCompleteTextView searchAutoCompleteTextView = (AutoCompleteTextView)
+                searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoCompleteTextView.setThreshold(1);
 
         return true;
     }
@@ -298,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
                     Constant.RELATION};
 
             private ContactAdapter mAdapter;
-            private SearchViewSuggestionAdapter mCursorAdapter;
+            private SimpleCursorAdapter mCursorAdapter;
             private SearchView mSearchView;
             private boolean isToCallOnSingleTap;
 
@@ -312,7 +326,28 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    populateSuggestionData(newText);
+//                    populateSuggestionData(newText);
+                    ArrayList<String> mList = new ArrayList<String>();
+                    mList.add("Test 1");
+                    mList.add("Test 2");
+                    mList.add("Test 3");
+                    mList.add("Test 4");
+                    mList.add("Test 5");
+                    mList.add("Test 6");
+                    mList.add("Test 7");
+                    mList.add("Test 8");
+                    mList.add("Test 9");
+                    mList.add("Test 10");
+                    final MatrixCursor c = new MatrixCursor(new String[] { BaseColumns._ID, "keyword"});
+                    for (int i=0; i < mList.size(); i++)
+                    {
+                        if (mList.get(i).toLowerCase().startsWith(newText.toLowerCase()))
+                        {
+                            c.addRow(new Object[]{i, mList.get(i)});
+                        }
+                    }
+                    mCursorAdapter.changeCursor(c);
+                    mCursorAdapter.notifyDataSetChanged();
                     return onQueryTextSubmit(newText);
                 }
             };
@@ -369,7 +404,6 @@ public class MainActivity extends AppCompatActivity {
                         suggesionList.add(cursor.getString(indexKeyword));
                     } while(cursor.moveToNext());
                 }
-                mCursorAdapter.setSuggestionList(suggesionList);
                 mCursorAdapter.changeCursor(cursor);
 //        printData(cursor);
                 return true;
@@ -537,14 +571,6 @@ public class MainActivity extends AppCompatActivity {
                         } else if (!synced) {
                             //new SyncTask(this.getBaseContext()).execute(PrefManager.on(getBaseContext()).getConfig());
                         }
-
-                        final int[] to = new int[] {android.R.id.text1};
-                        mCursorAdapter = new SearchViewSuggestionAdapter(getActivity(),
-                                R.layout.query_suggestion,
-                                null,
-                                new String[]{DataProvider.Entry._ID, DataProvider.Entry.KEYWORD},//Reduce to one column only
-                                to,
-                                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
                         break;
                 }
             }
@@ -626,7 +652,6 @@ public class MainActivity extends AppCompatActivity {
                 buildView();
                 loadView();
             }
-
         }
     }
 }

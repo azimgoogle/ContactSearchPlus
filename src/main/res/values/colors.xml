@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#c60606</color>
     <color name="colorPrimaryDark">#9b0606</color>
-    <color name="colorAccent">#0682cf</color>
+    <color name="colorAccent">#ba0505</color>
 
     <!-- main color for drawable-v21/my_ripple -->
     <color name="my_color_highlight">#FFE99E63</color>

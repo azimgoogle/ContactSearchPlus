@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import com.letbyte.contact.R;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,11 +76,16 @@ public class PrefManager {
         editor.commit();
     }
 
-
     public boolean isToSuggest() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         if (pref == null) return false;
         return pref.getBoolean(context.getString(R.string.suggestion), true);
+    }
+
+    public boolean isToDIsplayContactHead() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        if (pref == null) return false;
+        return pref.getBoolean(context.getString(R.string.contact_head), true);
     }
 
     public boolean isFilteredByNumber() {

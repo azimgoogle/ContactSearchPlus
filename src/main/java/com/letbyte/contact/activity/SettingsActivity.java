@@ -1,6 +1,8 @@
 package com.letbyte.contact.activity;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,7 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.letbyte.contact.R;
+import com.letbyte.contact.control.Constant;
 import com.letbyte.contact.control.PrefManager;
+import com.letbyte.contact.data.model.Contact;
+import com.letbyte.contact.services.QuickContactService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -58,12 +66,54 @@ public class SettingsActivity extends AppCompatActivity {
             if (isChanged) {
                 PrefManager.on(getActivity()).setSynced(false);
                 // new SyncTask(this.getBaseContext()).execute(PrefManager.on(this).getConfig());
+
+                Context context = getActivity().getApplicationContext();
+                Intent intent = new Intent(context, QuickContactService.class);
+
+                if(PrefManager.on(getActivity()).isToDIsplayContactHead() &&
+                        !isServiceRunning(QuickContactService.class.getName())) {
+
+                    ArrayList<Long> contactIDList = new ArrayList<>(Constant.MAXIMUM_CONTACT_HEAD_COUNT);
+
+                    int counter = 0;
+                    for(Contact contact : Constant.contactModelList) {
+
+                        if(contact.getFrequent()) {
+                            contactIDList.add(contact.getId());
+                            if(++counter > Constant.MAXIMUM_CONTACT_HEAD_COUNT) {
+                                break;
+                            }
+                        }
+
+                    }
+
+                    intent.putExtra(getString(R.string.contact_head), contactIDList);
+                    context.startService(intent);
+
+                } else {
+
+                    boolean isStopped = context.stopService(intent);
+
+                }
             }
 
             Intent resultIntent = new Intent();
             resultIntent.putExtra("isChanged", isChanged);
             getActivity().setResult(Activity.RESULT_OK, resultIntent);
             getActivity().finish();
+        }
+
+        private boolean isServiceRunning(String className) {
+
+            ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+            List<ActivityManager.RunningServiceInfo> runningServiceInfos = manager.getRunningServices(Integer.MAX_VALUE);
+            for (ActivityManager.RunningServiceInfo info : runningServiceInfos) {
+                if (className.equals(info.service.getClassName())) {
+                    return true;
+                }
+            }
+            return false;
+
         }
 
     }

@@ -1,6 +1,8 @@
 package com.letbyte.contact.activity;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -46,6 +48,7 @@ import com.letbyte.contact.application.Application;
 import com.letbyte.contact.control.Constant;
 import com.letbyte.contact.control.PrefManager;
 import com.letbyte.contact.control.Util;
+import com.letbyte.contact.data.model.Contact;
 import com.letbyte.contact.data.provider.DataProvider;
 import com.letbyte.contact.drawable.RecyclerViewDividerItemDecorator;
 import com.letbyte.contact.listener.ContactLoadingFinishedListener;
@@ -58,7 +61,11 @@ import com.letbyte.contact.loader.NotesLoaderCommand;
 import com.letbyte.contact.loader.OrganizationLoaderCommand;
 import com.letbyte.contact.loader.PhoneNumberLoaderCommand;
 import com.letbyte.contact.loader.RelationLoaderCommand;
+import com.letbyte.contact.services.QuickContactService;
 import com.letbyte.contact.utility.ContactUtility;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -322,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
             private static final String navItem = "navItem";
             private static final int navNone = 0;
             private static final int navSearch = 1;
-            boolean isToSuggest;
+            private boolean isToSuggest;
 
 
             private final int[] searchIndexes = new int[]{
@@ -394,6 +401,49 @@ public class MainActivity extends AppCompatActivity {
                         String filterString = mSearchView.getQuery().toString();
                         onQueryTextListener.onQueryTextChange(filterString);
                     }
+
+
+                    Context context = getActivity().getApplicationContext();
+                    Intent intent = new Intent(context, QuickContactService.class);
+                    if(PrefManager.on(context).isToDIsplayContactHead() &&
+                            !isServiceRunning(QuickContactService.class.getName())) {
+
+                        ArrayList<Long> contactIDList = new ArrayList<>(Constant.MAXIMUM_CONTACT_HEAD_COUNT);
+
+                        int counter = 0;
+                        for(Contact contact : Constant.contactModelList) {
+
+                            if(contact.getFrequent()) {
+                                contactIDList.add(contact.getId());
+                                if(++counter > Constant.MAXIMUM_CONTACT_HEAD_COUNT) {
+                                    break;
+                                }
+                            }
+
+                        }
+
+                        intent.putExtra(getString(R.string.contact_head), contactIDList);
+                        context.startService(intent);
+
+                    } else {
+
+                        boolean isStopped = context.stopService(intent);
+
+                    }
+                }
+
+
+                private boolean isServiceRunning(String className) {
+
+                    ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+                    List<ActivityManager.RunningServiceInfo> runningServiceInfos = manager.getRunningServices(Integer.MAX_VALUE);
+                    for (ActivityManager.RunningServiceInfo info : runningServiceInfos) {
+                        if (className.equals(info.service.getClassName())) {
+                            return true;
+                        }
+                    }
+                    return false;
+
                 }
             };
 
@@ -440,6 +490,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     I++;
                 } while(I < length && suggestionCount < numberOfSuggestionRows);
+
                 mCursorAdapter = new SimpleCursorAdapter(getActivity(),
                         R.layout.query_suggestion,
                         matrixCursor, from,

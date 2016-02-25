@@ -18,6 +18,7 @@ public interface Constant {
     int SECOND = 1 * MILLI;
     int MINUTE = 60 * SECOND;
     int HOUR = 60 * MINUTE;
+    int MAXIMUM_CONTACT_HEAD_COUNT = 3;
 
     String EMPTY_STRING = "";
     String COMMA_STRING = ",";

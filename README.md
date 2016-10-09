@@ -3,3 +3,5 @@ A very fast and powerful contact searcher. Intelligently search for phone number
 
 This is a very good reference for all kind of android contact related tasks.
 
+It can search in Phone Numbers, Email, Postal Addresses, Organizations, Relations, Notes etc. Easy scope to add any more field.
+
